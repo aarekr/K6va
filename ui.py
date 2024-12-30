@@ -37,7 +37,6 @@ for i in range(len(CARD_LIST)):
     image = pygame.image.load((CARD_LIST[i][2]))
     image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
     CARDS.append(image)
-print("CARDS:", CARDS)
 
 def game_top_text():
     """ Displaying K6va text """
@@ -66,7 +65,7 @@ class UI:
     def start_game(self):
         """ Texts when game starts """
         pygame.init()
-        self.screen.blit(game_top_text(), (400, 15))
+        self.screen.blit(game_top_text(), (420, 15))
         self.screen.blit(how_many_players_text(), (260, 250))
         pygame.display.update()
         start_game = False
@@ -89,13 +88,45 @@ class UI:
         self.round += 1
         print("dealing cards, round:", self.round)
         self.screen.fill(GREEN)
-        self.screen.blit(game_top_text(), (370, 15))
+        self.screen.blit(game_top_text(), (420, 15))
         random.shuffle(CARDS)
-        self.players_hand = []
-        for _ in range(self.round):
-            card = CARDS.pop()
-            self.players_hand.append(card)
+        #self.players_hand = []
+        #for i in range(self.round):
+            #card = CARDS.pop()  # remove this
+        #    self.players_hand.append()  # last items on the list
         pygame.display.update()
+
+    def show_players_cards(self):
+        if self.round == 0:
+            return
+        elif self.round == 1:
+            #self.screen.blit(self.players_hand[0], (450, 600))
+            self.screen.blit(CARDS[-1], (450,600))
+        elif self.round == 2:
+            self.screen.blit(CARDS[-1], (390, 600))
+            self.screen.blit(CARDS[-2], (510, 600))
+        elif self.round == 3:
+            self.screen.blit(CARDS[-1], (330, 600))
+            self.screen.blit(CARDS[-2], (450, 600))
+            self.screen.blit(CARDS[-3], (570, 600))
+        elif self.round == 4:
+            self.screen.blit(CARDS[-1], (270, 600))
+            self.screen.blit(CARDS[-2], (390, 600))
+            self.screen.blit(CARDS[-3], (510, 600))
+            self.screen.blit(CARDS[-4], (630, 600))
+        elif self.round == 5:
+            self.screen.blit(CARDS[-1], (210, 600))
+            self.screen.blit(CARDS[-2], (330, 600))
+            self.screen.blit(CARDS[-3], (450, 600))
+            self.screen.blit(CARDS[-4], (570, 600))
+            self.screen.blit(CARDS[-5], (690, 600))
+        elif self.round == 6:
+            self.screen.blit(CARDS[-1], (400, 600))
+            self.screen.blit(CARDS[-2], (440, 600))
+            self.screen.blit(CARDS[-3], (480, 600))
+            self.screen.blit(CARDS[-4], (520, 600))
+            self.screen.blit(CARDS[-5], (560, 600))
+            self.screen.blit(CARDS[-6], (600, 600))
 
     def game_loop(self):
         """ Game loop """
@@ -106,14 +137,8 @@ class UI:
 
         print("\nGame started")
         while self.game_active:
-            if self.round == 0:
-                pass
-            elif self.round == 1:
-                self.screen.blit(self.players_hand[0], (400, 600))
-            elif self.round == 2:
-                self.screen.blit(CARDS[4], (330, 600))
-                self.screen.blit(CARDS[5], (450, 600))
-            pygame.draw.rect(self.screen, BLUE,[100, 100,140,40])
+            self.show_players_cards()
+            pygame.draw.rect(self.screen, BLUE,[100, 100, 140, 40])
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
