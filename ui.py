@@ -6,7 +6,7 @@ import pygame
 
 #width = screen.get_width()
 #height = screen.get_height()
-BOARD_SIZE = (950, 750)
+BOARD_SIZE = (1000, 750)
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
@@ -14,18 +14,27 @@ GREEN = (0, 170, 0)
 
 CARDS = []
 CARD_IMAGE_SIZE = (100, 130)
-CARD_LIST = ["cards/6_of_clubs.png", "cards/6_of_diamonds.png", "cards/6_of_hearts.png", "cards/6_of_spades.png",
-            "cards/7_of_clubs.png", "cards/7_of_diamonds.png", "cards/7_of_hearts.png", "cards/7_of_spades.png",
-            "cards/8_of_clubs.png", "cards/8_of_diamonds.png", "cards/8_of_hearts.png", "cards/8_of_spades.png",
-            "cards/9_of_clubs.png", "cards/9_of_diamonds.png", "cards/9_of_hearts.png", "cards/9_of_spades.png",
-            "cards/10_of_clubs.png", "cards/10_of_diamonds.png", "cards/10_of_hearts.png", "cards/10_of_spades.png",
-            "cards/jack_of_clubs.png", "cards/jack_of_diamonds.png", "cards/jack_of_hearts.png", "cards/jack_of_spades.png",
-            "cards/queen_of_clubs.png", "cards/queen_of_diamonds.png", "cards/queen_of_hearts.png", "cards/queen_of_spades.png",
-            "cards/king_of_clubs.png", "cards/king_of_diamonds.png", "cards/king_of_hearts.png", "cards/king_of_spades.png",
-            "cards/ace_of_clubs.png", "cards/ace_of_diamonds.png", "cards/ace_of_hearts.png", "cards/ace_of_spades.png"
+CARD_LIST = [(6, "c", "cards/6_of_clubs.png"), (6, "d", "cards/6_of_diamonds.png"),
+            (6, "h", "cards/6_of_hearts.png"), (6, "s", "cards/6_of_spades.png"),
+            (7, "c", "cards/7_of_clubs.png"), (7, "d", "cards/7_of_diamonds.png"),
+            (7, "h", "cards/7_of_hearts.png"), (7, "s", "cards/7_of_spades.png"),
+            (8, "c", "cards/8_of_clubs.png"), (8, "d", "cards/8_of_diamonds.png"),
+            (8, "h", "cards/8_of_hearts.png"), (8, "s", "cards/8_of_spades.png"),
+            (9, "c", "cards/9_of_clubs.png"), (9, "d", "cards/9_of_diamonds.png"),
+            (9, "h", "cards/9_of_hearts.png"), (9, "s", "cards/9_of_spades.png"),
+            (10, "c", "cards/10_of_clubs.png"), (10, "d", "cards/10_of_diamonds.png"),
+            (10, "h", "cards/10_of_hearts.png"), (10, "s", "cards/10_of_spades.png"),
+            (11, "c", "cards/jack_of_clubs.png"), (11, "d", "cards/jack_of_diamonds.png"),
+            (11, "h", "cards/jack_of_hearts.png"), (11, "s", "cards/jack_of_spades.png"),
+            (12, "c", "cards/queen_of_clubs.png"), (12, "d", "cards/queen_of_diamonds.png"),
+            (12, "h", "cards/queen_of_hearts.png"), (12, "s", "cards/queen_of_spades.png"),
+            (13, "c", "cards/king_of_clubs.png"), (13, "d", "cards/king_of_diamonds.png"),
+            (13, "h", "cards/king_of_hearts.png"), (13, "s", "cards/king_of_spades.png"),
+            (14, "c", "cards/ace_of_clubs.png"), (14, "d", "cards/ace_of_diamonds.png"),
+            (14, "h", "cards/ace_of_hearts.png"), (14, "s", "cards/ace_of_spades.png")
             ]
 for i in range(len(CARD_LIST)):
-    image = pygame.image.load((CARD_LIST[i]))
+    image = pygame.image.load((CARD_LIST[i][2]))
     image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
     CARDS.append(image)
 print("CARDS:", CARDS)
@@ -57,7 +66,7 @@ class UI:
     def start_game(self):
         """ Texts when game starts """
         pygame.init()
-        self.screen.blit(game_top_text(), (370, 15))
+        self.screen.blit(game_top_text(), (400, 15))
         self.screen.blit(how_many_players_text(), (260, 250))
         pygame.display.update()
         start_game = False
