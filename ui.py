@@ -13,6 +13,7 @@ RED = (255, 0, 0)
 GREEN = (0, 170, 0)
 
 CARDS = []
+CARD_INDECES = [i for i in range(36)]
 CARD_IMAGE_SIZE = (100, 130)
 CARD_LIST = [(6, "c", "cards/6_of_clubs.png"), (6, "d", "cards/6_of_diamonds.png"),
             (6, "h", "cards/6_of_hearts.png"), (6, "s", "cards/6_of_spades.png"),
@@ -33,6 +34,7 @@ CARD_LIST = [(6, "c", "cards/6_of_clubs.png"), (6, "d", "cards/6_of_diamonds.png
             (14, "c", "cards/ace_of_clubs.png"), (14, "d", "cards/ace_of_diamonds.png"),
             (14, "h", "cards/ace_of_hearts.png"), (14, "s", "cards/ace_of_spades.png")
             ]
+print("CARD_LIST length: ", len(CARD_LIST))
 for i in range(len(CARD_LIST)):
     image = pygame.image.load((CARD_LIST[i][2]))
     image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
@@ -57,10 +59,10 @@ class UI:
     def __init__(self):
         self.screen = pygame.display.set_mode(BOARD_SIZE)
         self.game_active = True
-        self.players = 3
-        self.round = 0
-        self.players_hand = []
-        self.points = 0
+        self.players = 3                    # change to 4 if 4 players playing
+        self.round = 0                      # rounds 1->12->1 if 3 players, 1->9->1 if 4 players
+        self.players_hands = [[],[],[],[]]  # holds cards dealt during each round
+        self.points = [[],[],[],[]]         # holds cumulative points per player during the game
 
     def start_game(self):
         """ Texts when game starts """
@@ -89,14 +91,37 @@ class UI:
         print("dealing cards, round:", self.round)
         self.screen.fill(GREEN)
         self.screen.blit(game_top_text(), (420, 15))
-        random.shuffle(CARDS)
-        #self.players_hand = []
-        #for i in range(self.round):
-            #card = CARDS.pop()  # remove this
-        #    self.players_hand.append()  # last items on the list
+        random.shuffle(CARD_INDECES)  # numbers 0-35 are shuffled
+        print("CARD_INDECES shuffled:", CARD_INDECES)
+        self.players_hands = [[],[],[],[]]
+        index_pointer = 0  # index in CARD_INDECES which determines a card in CARDS
+        # each player gets self.round number of cards
+        print("PLAYER")
+        for i in range(self.round):
+            print("i:", i, " - index_pointer:", index_pointer, " - CARD_INDECES:", CARD_INDECES[index_pointer])
+            self.players_hands[0].append(CARDS[CARD_INDECES[index_pointer]])
+            index_pointer += 1
+        self.screen.blit(self.players_hands[0][0], (100, 100))
+        print("OPPONENT 1")
+        for i in range(self.round):
+            print("i:", i, " - index_pointer:", index_pointer, " - CARD_INDECES:", CARD_INDECES[index_pointer])
+            self.players_hands[1].append(CARDS[CARD_INDECES[index_pointer]])
+            index_pointer += 1
+        print("OPPONENT 2")
+        for i in range(self.round):
+            print("i:", i, " - index_pointer:", index_pointer, " - CARD_INDECES:", CARD_INDECES[index_pointer])
+            self.players_hands[2].append(CARDS[CARD_INDECES[index_pointer]])
+            index_pointer += 1
+        if self.players == 4:
+            print("OPPONENT 3")
+            for i in range(self.round):
+                print("i:", i, " - index_pointer:", index_pointer, " - CARD_INDECES:", CARD_INDECES[index_pointer])
+                self.players_hands[3].append(CARDS[CARD_INDECES[index_pointer]])
+                index_pointer += 1
         pygame.display.update()
 
     def show_players_cards(self):
+        """ Displaying player's cards """
         if self.round == 0:
             return
         elif self.round == 1:
@@ -148,5 +173,6 @@ class UI:
                     print("clicked_position:", clicked_position)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_n:
-                        self.deal_cards()
+                        self.players_hand = self.deal_cards()
+            pygame.display.update()
 
