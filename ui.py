@@ -70,6 +70,7 @@ class UI:
         self.players = 3                    # change to 4 if 4 players playing
         self.round = 0                      # rounds 1->12->1 if 3 players, 1->9->1 if 4 players
         self.players_hands = [[],[],[],[]]  # holds cards dealt during each round
+        self.card_indeces = [[],[],[],[]]   # 
         self.points = [[],[],[],[]]         # holds cumulative points per player during the game
 
     def start_game(self):
@@ -94,6 +95,16 @@ class UI:
         print("number of players:", self.players)
         self.game_loop()
 
+    def empty_hands(self):
+        self.players_hands[0] = []
+        self.players_hands[1] = []
+        self.players_hands[2] = []
+        self.players_hands[3] = []
+        self.card_indeces[0] = []
+        self.card_indeces[1] = []
+        self.card_indeces[2] = []
+        self.card_indeces[3] = []
+
     def deal_cards(self):
         """ Shuffle and deal cards to players """
         self.round += 1
@@ -104,14 +115,17 @@ class UI:
         self.screen.blit(game_points_text(self.points), (20,15))
         random.shuffle(CARD_INDECES)  # numbers 0-35 are shuffled
         print("CARD_INDECES shuffled:", CARD_INDECES)
-        self.players_hands.clear# = [[],[],[],[]]
+        self.empty_hands()
         index_pointer = 0  # index in CARD_INDECES which determines a card in CARDS
         # each player gets self.round number of cards
         print("PLAYER")
         for i in range(self.round):
             print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
             self.players_hands[0].append(CARDS[CARD_INDECES[index_pointer]])
+            self.card_indeces[0].append(CARD_INDECES[index_pointer])
             index_pointer += 1
+        for i in self.card_indeces[0][-(self.round+1):]:
+            print("  card --->", CARD_LIST[i])
         print("OPPONENT 1")
         for i in range(self.round):
             print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
@@ -129,7 +143,14 @@ class UI:
                 self.players_hands[3].append(CARDS[CARD_INDECES[index_pointer]])
                 index_pointer += 1
         self.show_cards_on_table()
+        self.show_trump_card()
         pygame.display.update()
+
+    def show_trump_card(self):
+        if self.players == 3 and self.round < 12:
+            self.screen.blit(CARDS[CARD_INDECES[-1]], (870, 20))
+        elif self.players == 4 and self.round < 9:
+            self.screen.blit(CARDS[CARD_INDECES[-1]], (870, 20))
 
     def show_cards_on_table(self):
         """ Drawing cards on the table """
