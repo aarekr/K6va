@@ -124,8 +124,32 @@ class UI:
             self.players_hands[0].append(CARDS[CARD_INDECES[index_pointer]])
             self.card_indeces[0].append(CARD_INDECES[index_pointer])
             index_pointer += 1
+        hand = {"c": [], "d": [], "h": [], "s": []}
+        hand_value = 0
         for i in self.card_indeces[0][-(self.round+1):]:
-            print("  card --->", CARD_LIST[i])
+            print("  card --->", CARD_LIST[i][1], CARD_LIST[i][0])
+            hand[CARD_LIST[i][1]].append(CARD_LIST[i][0])
+        print("hand:", hand)
+        for key, value in hand.items():
+            print("hand:", key, value)
+            if key == CARD_LIST[CARD_INDECES[-1]][1] and len(value) > 0:  # trump in hand
+                print("key:", key, "value:", value, \
+                    " - CARD_LIST[CARD_INDECES[-1]][1]:", CARD_LIST[CARD_INDECES[-1]][1])
+                for card in value:  # point for every trump card
+                    print("card in value:", card)
+                    if (key == "c" and value == 7) or (key == "s" and value == 7):  # c7,s7 not counted
+                        continue
+                    hand_value += 1
+                #if hand_value > self.round/2:  # max half of the round points
+                #    hand_value = self.round/2
+            else:
+                for v in value:
+                    if v >= 13:  # non-trump kings and aces
+                        hand_value += 0.2
+            if (key == "c" and 7 in value) or (key == "s" and 7 in value):
+                hand_value += 1
+        print("hand_value:", hand_value)
+
         print("OPPONENT 1")
         for i in range(self.round):
             print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
