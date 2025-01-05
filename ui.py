@@ -124,20 +124,55 @@ class UI:
             self.players_hands[0].append(CARDS[CARD_INDECES[index_pointer]])
             self.card_indeces[0].append(CARD_INDECES[index_pointer])
             index_pointer += 1
+
+        print("OPPONENT 1")
+        for i in range(self.round):
+            print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
+            self.players_hands[1].append(CARDS[CARD_INDECES[index_pointer]])
+            self.card_indeces[1].append(CARD_INDECES[index_pointer])
+            index_pointer += 1
+        opponent_1_hand_value = round(self.opponent_hand_value(1))
+        print("opponent_1_hand_value:", opponent_1_hand_value)
+
+        print("OPPONENT 2")
+        for i in range(self.round):
+            print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
+            self.players_hands[2].append(CARDS[CARD_INDECES[index_pointer]])
+            self.card_indeces[2].append(CARD_INDECES[index_pointer])
+            index_pointer += 1
+        opponent_2_hand_value = round(self.opponent_hand_value(2))
+        print("opponent_2_hand_value:", opponent_2_hand_value)
+
+        if self.players == 4:
+            print("OPPONENT 3")
+            for i in range(self.round):
+                print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
+                self.players_hands[3].append(CARDS[CARD_INDECES[index_pointer]])
+                self.card_indeces[3].append(CARD_INDECES[index_pointer])
+                index_pointer += 1
+            opponent_3_hand_value = round(self.opponent_hand_value(3))
+            print("opponent_3_hand_value:", opponent_3_hand_value)
+
+        self.show_cards_on_table()
+        self.show_trump_card()
+        pygame.display.update()
+        return [opponent_1_hand_value, opponent_2_hand_value, opponent_3_hand_value]
+
+    def opponent_hand_value(self, player_index):
         hand = {"c": [], "d": [], "h": [], "s": []}
         hand_value = 0
-        for i in self.card_indeces[0][-(self.round+1):]:
+        for i in self.card_indeces[player_index][-(self.round+1):]:
             print("  card --->", CARD_LIST[i][1], CARD_LIST[i][0])
             hand[CARD_LIST[i][1]].append(CARD_LIST[i][0])
         print("hand:", hand)
         for key, value in hand.items():
-            print("hand:", key, value)
+            print("hand:", key, value, key == CARD_LIST[CARD_INDECES[-1]][1])
             if key == CARD_LIST[CARD_INDECES[-1]][1] and len(value) > 0:  # trump in hand
                 print("key:", key, "value:", value, \
                     " - CARD_LIST[CARD_INDECES[-1]][1]:", CARD_LIST[CARD_INDECES[-1]][1])
                 for card in value:  # point for every trump card
                     print("card in value:", card)
-                    if (key == "c" and value == 7) or (key == "s" and value == 7):  # c7,s7 not counted
+                    if (key == "c" and value == 7) or (key == "s" and value == 7):  # c7,s7
                         continue
                     hand_value += 1
                 #if hand_value > self.round/2:  # max half of the round points
@@ -148,27 +183,7 @@ class UI:
                         hand_value += 0.2
             if (key == "c" and 7 in value) or (key == "s" and 7 in value):
                 hand_value += 1
-        print("hand_value:", hand_value)
-
-        print("OPPONENT 1")
-        for i in range(self.round):
-            print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
-            self.players_hands[1].append(CARDS[CARD_INDECES[index_pointer]])
-            index_pointer += 1
-        print("OPPONENT 2")
-        for i in range(self.round):
-            print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
-            self.players_hands[2].append(CARDS[CARD_INDECES[index_pointer]])
-            index_pointer += 1
-        if self.players == 4:
-            print("OPPONENT 3")
-            for i in range(self.round):
-                print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
-                self.players_hands[3].append(CARDS[CARD_INDECES[index_pointer]])
-                index_pointer += 1
-        self.show_cards_on_table()
-        self.show_trump_card()
-        pygame.display.update()
+        return hand_value
 
     def show_trump_card(self):
         if self.players == 3 and self.round < 12:
@@ -183,7 +198,7 @@ class UI:
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[2][0], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (450, 150))
+                self.screen.blit(self.players_hands[3][0], (450, 100))
         elif self.round == 2:
             self.screen.blit(self.players_hands[0][0], (390, 600))
             self.screen.blit(self.players_hands[0][1], (510, 600))
@@ -192,8 +207,8 @@ class UI:
             self.screen.blit(self.players_hands[2][0], (830, 300))
             self.screen.blit(self.players_hands[2][1], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (440, 150))
-                self.screen.blit(self.players_hands[3][1], (460, 150))
+                self.screen.blit(self.players_hands[3][0], (440, 100))
+                self.screen.blit(self.players_hands[3][1], (460, 100))
         elif self.round == 3:
             self.screen.blit(self.players_hands[0][0], (330, 600))
             self.screen.blit(self.players_hands[0][1], (450, 600))
@@ -205,9 +220,9 @@ class UI:
             self.screen.blit(self.players_hands[2][1], (830, 300))
             self.screen.blit(self.players_hands[2][2], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (430, 150))
-                self.screen.blit(self.players_hands[3][1], (450, 150))
-                self.screen.blit(self.players_hands[3][2], (470, 150))
+                self.screen.blit(self.players_hands[3][0], (430, 100))
+                self.screen.blit(self.players_hands[3][1], (450, 100))
+                self.screen.blit(self.players_hands[3][2], (470, 100))
         elif self.round == 4:
             self.screen.blit(self.players_hands[0][0], (270, 600))
             self.screen.blit(self.players_hands[0][1], (390, 600))
@@ -222,10 +237,10 @@ class UI:
             self.screen.blit(self.players_hands[2][2], (830, 300))
             self.screen.blit(self.players_hands[2][3], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (420, 150))
-                self.screen.blit(self.players_hands[3][1], (440, 150))
-                self.screen.blit(self.players_hands[3][2], (460, 150))
-                self.screen.blit(self.players_hands[3][3], (480, 150))
+                self.screen.blit(self.players_hands[3][0], (420, 100))
+                self.screen.blit(self.players_hands[3][1], (440, 100))
+                self.screen.blit(self.players_hands[3][2], (460, 100))
+                self.screen.blit(self.players_hands[3][3], (480, 100))
         elif self.round == 5:
             self.screen.blit(self.players_hands[0][0], (210, 600))
             self.screen.blit(self.players_hands[0][1], (330, 600))
@@ -243,11 +258,11 @@ class UI:
             self.screen.blit(self.players_hands[2][3], (830, 300))
             self.screen.blit(self.players_hands[2][4], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (410, 150))
-                self.screen.blit(self.players_hands[3][1], (430, 150))
-                self.screen.blit(self.players_hands[3][2], (450, 150))
-                self.screen.blit(self.players_hands[3][3], (470, 150))
-                self.screen.blit(self.players_hands[3][4], (490, 150))
+                self.screen.blit(self.players_hands[3][0], (410, 100))
+                self.screen.blit(self.players_hands[3][1], (430, 100))
+                self.screen.blit(self.players_hands[3][2], (450, 100))
+                self.screen.blit(self.players_hands[3][3], (470, 100))
+                self.screen.blit(self.players_hands[3][4], (490, 100))
         elif self.round == 6:
             self.screen.blit(self.players_hands[0][0], (400, 600))
             self.screen.blit(self.players_hands[0][1], (440, 600))
@@ -268,15 +283,29 @@ class UI:
             self.screen.blit(self.players_hands[2][4], (830, 300))
             self.screen.blit(self.players_hands[2][5], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (400, 150))
-                self.screen.blit(self.players_hands[3][1], (420, 150))
-                self.screen.blit(self.players_hands[3][2], (440, 150))
-                self.screen.blit(self.players_hands[3][3], (460, 150))
-                self.screen.blit(self.players_hands[3][4], (480, 150))
-                self.screen.blit(self.players_hands[3][4], (500, 150))
+                self.screen.blit(self.players_hands[3][0], (400, 100))
+                self.screen.blit(self.players_hands[3][1], (420, 100))
+                self.screen.blit(self.players_hands[3][2], (440, 100))
+                self.screen.blit(self.players_hands[3][3], (460, 100))
+                self.screen.blit(self.players_hands[3][4], (480, 100))
+                self.screen.blit(self.players_hands[3][4], (500, 100))
+
+    def draw_opponents_attempts(self, opponents_attempts):
+        """ Drawing how many wins opponents try to get per round """
+        text_font = pygame.font.Font(pygame.font.get_default_font(), 20)
+        opp_1_text = f"Attempt: {opponents_attempts[0]}"
+        opp_2_text = f"Attempt: {opponents_attempts[1]}"
+        opp_3_text = f"Attempt: {opponents_attempts[2]}"
+        label_1 = text_font.render(opp_1_text, 0, BLACK)
+        label_2 = text_font.render(opp_2_text, 0, BLACK)
+        label_3 = text_font.render(opp_3_text, 0, BLACK)
+        self.screen.blit(label_1, (50, 450))
+        self.screen.blit(label_2, (850, 450))
+        self.screen.blit(label_3, (450, 250))
 
     def game_loop(self):
         """ Game loop """
+        opponents_attempts = []
         pygame.init()
         self.screen.fill(GREEN)
         self.screen.blit(game_top_text(), (420, 15))
@@ -292,5 +321,7 @@ class UI:
                     print("clicked_position:", clicked_position)
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_n:
-                        self.players_hand = self.deal_cards()
+                        opponents_attempts = self.deal_cards()
+                        print("opponents_attempts:", opponents_attempts)
+                        self.draw_opponents_attempts(opponents_attempts)
             pygame.display.update()
