@@ -41,6 +41,21 @@ for i in range(len(CARD_LIST)):
     image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
     CARDS.append(image)
 
+TEXT_BOXES = []
+for row in range(2):
+    for column in range(1):
+        x = 850
+        y = 60 * row + 630
+        box = pygame.Rect(x, y, 120, 40)
+        TEXT_BOXES.append(box)
+
+LETTER_BUTTONS = []
+BUTTON_TEXTS = ["FIRST", "SECOND"]
+for index, box in enumerate(TEXT_BOXES):
+    text = BUTTON_TEXTS[index]
+    button = ([box, text])
+    LETTER_BUTTONS.append(button)
+
 def game_top_text():
     """ Displaying K6va text """
     text_font = pygame.font.Font(pygame.font.get_default_font(), 60)
@@ -60,6 +75,11 @@ def game_points_text(points):
     text_font = pygame.font.Font(pygame.font.get_default_font(), 30)
     game_points = f"Points: {points}"
     label = text_font.render(game_points, 0, BLACK)
+    return label
+
+def letter_text(letter):
+    button_font = pygame.font.Font(pygame.font.get_default_font(), 20)
+    label = button_font.render(letter, True, BLACK)
     return label
 
 class UI:
@@ -95,6 +115,13 @@ class UI:
         print("number of players:", self.players)
         self.game_loop()
 
+    def draw_letter_buttons(self, LETTER_BUTTONS):
+        for button, letter in LETTER_BUTTONS:
+            button_text = letter_text(letter)
+            button_text_rect = button_text.get_rect(center=(button.x + 20, button.y + 20))
+            pygame.draw.rect(self.screen, BLACK, button, 2)
+            self.screen.blit(button_text, button_text_rect)
+
     def empty_hands(self):
         self.players_hands[0] = []
         self.players_hands[1] = []
@@ -111,8 +138,9 @@ class UI:
         print("****************************************************************")
         print("dealing cards, round:", self.round)
         self.screen.fill(GREEN)
-        self.screen.blit(game_top_text(), (420, 15))
+        #self.screen.blit(game_top_text(), (420, 15))
         self.screen.blit(game_points_text(self.points), (20,15))
+        self.draw_letter_buttons(LETTER_BUTTONS)
         random.shuffle(CARD_INDECES)  # numbers 0-35 are shuffled
         print("CARD_INDECES shuffled:", CARD_INDECES)
         self.empty_hands()
@@ -198,7 +226,7 @@ class UI:
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[2][0], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (450, 100))
+                self.screen.blit(self.players_hands[3][0], (450, 50))
         elif self.round == 2:
             self.screen.blit(self.players_hands[0][0], (390, 600))
             self.screen.blit(self.players_hands[0][1], (510, 600))
@@ -207,8 +235,8 @@ class UI:
             self.screen.blit(self.players_hands[2][0], (830, 300))
             self.screen.blit(self.players_hands[2][1], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (440, 100))
-                self.screen.blit(self.players_hands[3][1], (460, 100))
+                self.screen.blit(self.players_hands[3][0], (440, 50))
+                self.screen.blit(self.players_hands[3][1], (460, 50))
         elif self.round == 3:
             self.screen.blit(self.players_hands[0][0], (330, 600))
             self.screen.blit(self.players_hands[0][1], (450, 600))
@@ -220,9 +248,9 @@ class UI:
             self.screen.blit(self.players_hands[2][1], (830, 300))
             self.screen.blit(self.players_hands[2][2], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (430, 100))
-                self.screen.blit(self.players_hands[3][1], (450, 100))
-                self.screen.blit(self.players_hands[3][2], (470, 100))
+                self.screen.blit(self.players_hands[3][0], (430, 50))
+                self.screen.blit(self.players_hands[3][1], (450, 50))
+                self.screen.blit(self.players_hands[3][2], (470, 50))
         elif self.round == 4:
             self.screen.blit(self.players_hands[0][0], (270, 600))
             self.screen.blit(self.players_hands[0][1], (390, 600))
@@ -237,10 +265,10 @@ class UI:
             self.screen.blit(self.players_hands[2][2], (830, 300))
             self.screen.blit(self.players_hands[2][3], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (420, 100))
-                self.screen.blit(self.players_hands[3][1], (440, 100))
-                self.screen.blit(self.players_hands[3][2], (460, 100))
-                self.screen.blit(self.players_hands[3][3], (480, 100))
+                self.screen.blit(self.players_hands[3][0], (420, 50))
+                self.screen.blit(self.players_hands[3][1], (440, 50))
+                self.screen.blit(self.players_hands[3][2], (460, 50))
+                self.screen.blit(self.players_hands[3][3], (480, 50))
         elif self.round == 5:
             self.screen.blit(self.players_hands[0][0], (210, 600))
             self.screen.blit(self.players_hands[0][1], (330, 600))
@@ -258,11 +286,11 @@ class UI:
             self.screen.blit(self.players_hands[2][3], (830, 300))
             self.screen.blit(self.players_hands[2][4], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (410, 100))
-                self.screen.blit(self.players_hands[3][1], (430, 100))
-                self.screen.blit(self.players_hands[3][2], (450, 100))
-                self.screen.blit(self.players_hands[3][3], (470, 100))
-                self.screen.blit(self.players_hands[3][4], (490, 100))
+                self.screen.blit(self.players_hands[3][0], (410, 50))
+                self.screen.blit(self.players_hands[3][1], (430, 50))
+                self.screen.blit(self.players_hands[3][2], (450, 50))
+                self.screen.blit(self.players_hands[3][3], (470, 50))
+                self.screen.blit(self.players_hands[3][4], (490, 50))
         elif self.round == 6:
             self.screen.blit(self.players_hands[0][0], (400, 600))
             self.screen.blit(self.players_hands[0][1], (440, 600))
@@ -283,12 +311,12 @@ class UI:
             self.screen.blit(self.players_hands[2][4], (830, 300))
             self.screen.blit(self.players_hands[2][5], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (400, 100))
-                self.screen.blit(self.players_hands[3][1], (420, 100))
-                self.screen.blit(self.players_hands[3][2], (440, 100))
-                self.screen.blit(self.players_hands[3][3], (460, 100))
-                self.screen.blit(self.players_hands[3][4], (480, 100))
-                self.screen.blit(self.players_hands[3][4], (500, 100))
+                self.screen.blit(self.players_hands[3][0], (400, 50))
+                self.screen.blit(self.players_hands[3][1], (420, 50))
+                self.screen.blit(self.players_hands[3][2], (440, 50))
+                self.screen.blit(self.players_hands[3][3], (460, 50))
+                self.screen.blit(self.players_hands[3][4], (480, 50))
+                self.screen.blit(self.players_hands[3][4], (500, 50))
 
     def draw_opponents_attempts(self, opponents_attempts):
         """ Drawing how many wins opponents try to get per round """
@@ -301,14 +329,14 @@ class UI:
         label_3 = text_font.render(opp_3_text, 0, BLACK)
         self.screen.blit(label_1, (50, 450))
         self.screen.blit(label_2, (850, 450))
-        self.screen.blit(label_3, (450, 250))
+        self.screen.blit(label_3, (450, 200))
 
     def game_loop(self):
         """ Game loop """
         opponents_attempts = []
         pygame.init()
         self.screen.fill(GREEN)
-        self.screen.blit(game_top_text(), (420, 15))
+        self.screen.blit(game_top_text(), (420, 315))
         pygame.display.update()
 
         print("\nGame started")
@@ -319,9 +347,17 @@ class UI:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
                     print("clicked_position:", clicked_position)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    clicked_position = event.pos
+                    for button, text in LETTER_BUTTONS:
+                        if button.collidepoint(clicked_position):
+                            print("collision with text:", text)
+
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_n:
                         opponents_attempts = self.deal_cards()
                         print("opponents_attempts:", opponents_attempts)
                         self.draw_opponents_attempts(opponents_attempts)
+            #pygame.draw.rect(self.screen, BLUE, (890,650,100,40))
+            #pygame.draw.rect(self.screen, BLUE, (890,700,100,40))
             pygame.display.update()
