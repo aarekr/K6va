@@ -13,6 +13,9 @@ BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 GREEN = (0, 170, 0)
 
+players_cards = []
+opponents_attempts = []
+
 CARDS = []
 CARD_INDECES = list(range(36))
 CARD_IMAGE_SIZE = (100, 130)
@@ -190,14 +193,10 @@ class UI:
         hand = {"c": [], "d": [], "h": [], "s": []}
         hand_value = 0
         for i in self.card_indeces[player_index][-(self.round+1):]:
-            print("  card --->", CARD_LIST[i][1], CARD_LIST[i][0])
             hand[CARD_LIST[i][1]].append(CARD_LIST[i][0])
         print("hand:", hand)
         for key, value in hand.items():
-            print("hand:", key, value, key == CARD_LIST[CARD_INDECES[-1]][1])
             if key == CARD_LIST[CARD_INDECES[-1]][1] and len(value) > 0:  # trump in hand
-                print("key:", key, "value:", value, \
-                    " - CARD_LIST[CARD_INDECES[-1]][1]:", CARD_LIST[CARD_INDECES[-1]][1])
                 for card in value:  # point for every trump card
                     print("card in value:", card)
                     if (key == "c" and value == 7) or (key == "s" and value == 7):  # c7,s7
@@ -214,15 +213,16 @@ class UI:
         return hand_value
 
     def show_trump_card(self):
-        if self.players == 3 and self.round < 12:
-            self.screen.blit(CARDS[CARD_INDECES[-1]], (870, 20))
-        elif self.players == 4 and self.round < 9:
+        """ Showing trump card in the right upper corner """
+        if (self.players == 3 and self.round < 12) or (self.players == 4 and self.round < 9):
             self.screen.blit(CARDS[CARD_INDECES[-1]], (870, 20))
 
     def show_cards_on_table(self):
         """ Drawing cards on the table """
         if self.round == 1:
             self.screen.blit(self.players_hands[0][0], (450, 600))
+            card = pygame.Rect(450, 600, 100, 130)
+            players_cards.append(card)
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[2][0], (850, 300))
             if self.players == 4:
@@ -331,6 +331,16 @@ class UI:
         self.screen.blit(label_2, (850, 450))
         self.screen.blit(label_3, (450, 200))
 
+    def update_table_after_first_round(self):
+        self.screen.fill(GREEN)
+        self.show_trump_card()
+        self.screen.blit(game_points_text(self.points), (20,15))
+        self.draw_letter_buttons(LETTER_BUTTONS)
+        self.screen.blit(self.players_hands[1][0], (50, 300))
+        self.screen.blit(self.players_hands[2][0], (850, 300))
+        if self.players == 4:
+            self.screen.blit(self.players_hands[3][0], (450, 50))
+
     def game_loop(self):
         """ Game loop """
         opponents_attempts = []
@@ -347,11 +357,61 @@ class UI:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
                     print("clicked_position:", clicked_position)
+                    if players_cards[0].collidepoint(clicked_position):
+                        self.screen.fill(GREEN)
+                        self.show_trump_card()
+                        self.screen.blit(game_points_text(self.points), (20, 15))
+                        self.draw_opponents_attempts(opponents_attempts)
+                        self.draw_letter_buttons(LETTER_BUTTONS)
+                        self.screen.blit(self.players_hands[0][0], (450, 400))
+                        self.screen.blit(self.players_hands[1][0], (50, 300))
+                        self.screen.blit(self.players_hands[2][0], (850, 300))
+                        if self.players == 4:
+                            self.screen.blit(self.players_hands[3][0], (450, 50))
+                        pygame.display.update()
+                        pygame.time.wait(1000)
+                        self.screen.fill(GREEN)
+                        self.show_trump_card()
+                        self.screen.blit(game_points_text(self.points), (20, 15))
+                        self.draw_opponents_attempts(opponents_attempts)
+                        self.draw_letter_buttons(LETTER_BUTTONS)
+                        self.screen.blit(self.players_hands[0][0], (450, 400))
+                        self.screen.blit(self.players_hands[1][0], (400, 300))
+                        self.screen.blit(self.players_hands[2][0], (850, 300))
+                        if self.players == 4:
+                            self.screen.blit(self.players_hands[3][0], (450, 50))
+                        pygame.display.update()
+                        pygame.time.wait(1000)
+                        self.screen.fill(GREEN)
+                        self.show_trump_card()
+                        self.screen.blit(game_points_text(self.points), (20, 15))
+                        self.draw_opponents_attempts(opponents_attempts)
+                        self.draw_letter_buttons(LETTER_BUTTONS)
+                        self.screen.blit(self.players_hands[0][0], (450, 400))
+                        self.screen.blit(self.players_hands[1][0], (400, 300))
+                        self.screen.blit(self.players_hands[2][0], (850, 300))
+                        if self.players == 4:
+                            self.screen.blit(self.players_hands[3][0], (450, 250))
+                        pygame.display.update()
+                        pygame.time.wait(1000)
+                        self.screen.fill(GREEN)
+                        self.show_trump_card()
+                        self.screen.blit(game_points_text(self.points), (20, 15))
+                        self.draw_opponents_attempts(opponents_attempts)
+                        self.draw_letter_buttons(LETTER_BUTTONS)
+                        self.screen.blit(self.players_hands[0][0], (450, 400))
+                        self.screen.blit(self.players_hands[1][0], (400, 300))
+                        self.screen.blit(self.players_hands[2][0], (500, 300))
+                        if self.players == 4:
+                            self.screen.blit(self.players_hands[3][0], (450, 250))
+                        pygame.display.update()
+                        print("mouse over card:", players_cards[0][1])
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
                     for button, text in LETTER_BUTTONS:
                         if button.collidepoint(clicked_position):
-                            print("collision with text:", text)
+                            print("collision with text:", text, button)
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_n:
