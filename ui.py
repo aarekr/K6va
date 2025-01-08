@@ -4,6 +4,8 @@ import sys
 import random
 import pygame
 
+from ui_helper import *
+
 #width = screen.get_width()
 #height = screen.get_height()
 BOARD_SIZE = (1000, 750)
@@ -13,77 +15,17 @@ BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 GREEN = (0, 170, 0)
 
-players_cards = []
-opponents_attempts = []
-
 CARDS = []
 CARD_INDECES = list(range(36))
 CARD_IMAGE_SIZE = (100, 130)
-CARD_LIST = [(6, "c", "cards/6_of_clubs.png"), (6, "d", "cards/6_of_diamonds.png"),
-            (6, "h", "cards/6_of_hearts.png"), (6, "s", "cards/6_of_spades.png"),
-            (7, "c", "cards/7_of_clubs.png"), (7, "d", "cards/7_of_diamonds.png"),
-            (7, "h", "cards/7_of_hearts.png"), (7, "s", "cards/7_of_spades.png"),
-            (8, "c", "cards/8_of_clubs.png"), (8, "d", "cards/8_of_diamonds.png"),
-            (8, "h", "cards/8_of_hearts.png"), (8, "s", "cards/8_of_spades.png"),
-            (9, "c", "cards/9_of_clubs.png"), (9, "d", "cards/9_of_diamonds.png"),
-            (9, "h", "cards/9_of_hearts.png"), (9, "s", "cards/9_of_spades.png"),
-            (10, "c", "cards/10_of_clubs.png"), (10, "d", "cards/10_of_diamonds.png"),
-            (10, "h", "cards/10_of_hearts.png"), (10, "s", "cards/10_of_spades.png"),
-            (11, "c", "cards/jack_of_clubs.png"), (11, "d", "cards/jack_of_diamonds.png"),
-            (11, "h", "cards/jack_of_hearts.png"), (11, "s", "cards/jack_of_spades.png"),
-            (12, "c", "cards/queen_of_clubs.png"), (12, "d", "cards/queen_of_diamonds.png"),
-            (12, "h", "cards/queen_of_hearts.png"), (12, "s", "cards/queen_of_spades.png"),
-            (13, "c", "cards/king_of_clubs.png"), (13, "d", "cards/king_of_diamonds.png"),
-            (13, "h", "cards/king_of_hearts.png"), (13, "s", "cards/king_of_spades.png"),
-            (14, "c", "cards/ace_of_clubs.png"), (14, "d", "cards/ace_of_diamonds.png"),
-            (14, "h", "cards/ace_of_hearts.png"), (14, "s", "cards/ace_of_spades.png")
-            ]
-print("CARD_LIST length: ", len(CARD_LIST))
+
+players_cards = []
+opponents_attempts = []
+
 for i in range(len(CARD_LIST)):
     image = pygame.image.load((CARD_LIST[i][2]))
     image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
     CARDS.append(image)
-
-TEXT_BOXES = []
-for row in range(2):
-    for column in range(1):
-        x = 850
-        y = 60 * row + 630
-        box = pygame.Rect(x, y, 120, 40)
-        TEXT_BOXES.append(box)
-
-LETTER_BUTTONS = []
-BUTTON_TEXTS = ["FIRST", "SECOND"]
-for index, box in enumerate(TEXT_BOXES):
-    text = BUTTON_TEXTS[index]
-    button = ([box, text])
-    LETTER_BUTTONS.append(button)
-
-def game_top_text():
-    """ Displaying K6va text """
-    text_font = pygame.font.Font(pygame.font.get_default_font(), 60)
-    game_starts = "Kõva"
-    label = text_font.render(game_starts, 0, RED)
-    return label
-
-def how_many_players_text():
-    """ Displaying how many players in game question text """
-    text_font = pygame.font.Font(pygame.font.get_default_font(), 30)
-    game_starts = "How many players? 3 or 4?"
-    label = text_font.render(game_starts, 0, BLUE)
-    return label
-
-def game_points_text(points):
-    """ Displaying how many total points the player has """
-    text_font = pygame.font.Font(pygame.font.get_default_font(), 30)
-    game_points = f"Points: {points}"
-    label = text_font.render(game_points, 0, BLACK)
-    return label
-
-def letter_text(letter):
-    button_font = pygame.font.Font(pygame.font.get_default_font(), 20)
-    label = button_font.render(letter, True, BLACK)
-    return label
 
 class UI:
     """ User interface class """
@@ -93,7 +35,7 @@ class UI:
         self.players = 3                    # change to 4 if 4 players playing
         self.round = 0                      # rounds 1->12->1 if 3 players, 1->9->1 if 4 players
         self.players_hands = [[],[],[],[]]  # holds cards dealt during each round
-        self.card_indeces = [[],[],[],[]]   # 
+        self.card_indeces = [[],[],[],[]]   # card indeces in players' hands
         self.points = [[],[],[],[]]         # holds cumulative points per player during the game
 
     def start_game(self):
@@ -118,14 +60,16 @@ class UI:
         print("number of players:", self.players)
         self.game_loop()
 
-    def draw_letter_buttons(self, LETTER_BUTTONS):
-        for button, letter in LETTER_BUTTONS:
-            button_text = letter_text(letter)
+    def draw_letter_buttons(self, BUTTONS):
+        """ Drawing text buttons """
+        for button, text in BUTTONS:
+            button_text = box_text(text)
             button_text_rect = button_text.get_rect(center=(button.x + 20, button.y + 20))
             pygame.draw.rect(self.screen, BLACK, button, 2)
             self.screen.blit(button_text, button_text_rect)
 
     def empty_hands(self):
+        """ Emptying hands before next round """
         self.players_hands[0] = []
         self.players_hands[1] = []
         self.players_hands[2] = []
@@ -143,7 +87,7 @@ class UI:
         self.screen.fill(GREEN)
         #self.screen.blit(game_top_text(), (420, 15))
         self.screen.blit(game_points_text(self.points), (20,15))
-        self.draw_letter_buttons(LETTER_BUTTONS)
+        self.draw_letter_buttons(BUTTONS)
         random.shuffle(CARD_INDECES)  # numbers 0-35 are shuffled
         print("CARD_INDECES shuffled:", CARD_INDECES)
         self.empty_hands()
@@ -190,6 +134,7 @@ class UI:
         return [opponent_1_hand_value, opponent_2_hand_value, opponent_3_hand_value]
 
     def opponent_hand_value(self, player_index):
+        """ Counting opponents' hand and attempt values """
         hand = {"c": [], "d": [], "h": [], "s": []}
         hand_value = 0
         for i in self.card_indeces[player_index][-(self.round+1):]:
@@ -335,7 +280,7 @@ class UI:
         self.screen.fill(GREEN)
         self.show_trump_card()
         self.screen.blit(game_points_text(self.points), (20,15))
-        self.draw_letter_buttons(LETTER_BUTTONS)
+        self.draw_letter_buttons(BUTTONS)
         self.screen.blit(self.players_hands[1][0], (50, 300))
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
@@ -362,7 +307,7 @@ class UI:
                         self.show_trump_card()
                         self.screen.blit(game_points_text(self.points), (20, 15))
                         self.draw_opponents_attempts(opponents_attempts)
-                        self.draw_letter_buttons(LETTER_BUTTONS)
+                        self.draw_letter_buttons(BUTTONS)
                         self.screen.blit(self.players_hands[0][0], (450, 400))
                         self.screen.blit(self.players_hands[1][0], (50, 300))
                         self.screen.blit(self.players_hands[2][0], (850, 300))
@@ -374,7 +319,7 @@ class UI:
                         self.show_trump_card()
                         self.screen.blit(game_points_text(self.points), (20, 15))
                         self.draw_opponents_attempts(opponents_attempts)
-                        self.draw_letter_buttons(LETTER_BUTTONS)
+                        self.draw_letter_buttons(BUTTONS)
                         self.screen.blit(self.players_hands[0][0], (450, 400))
                         self.screen.blit(self.players_hands[1][0], (400, 300))
                         self.screen.blit(self.players_hands[2][0], (850, 300))
@@ -386,7 +331,7 @@ class UI:
                         self.show_trump_card()
                         self.screen.blit(game_points_text(self.points), (20, 15))
                         self.draw_opponents_attempts(opponents_attempts)
-                        self.draw_letter_buttons(LETTER_BUTTONS)
+                        self.draw_letter_buttons(BUTTONS)
                         self.screen.blit(self.players_hands[0][0], (450, 400))
                         self.screen.blit(self.players_hands[1][0], (400, 300))
                         self.screen.blit(self.players_hands[2][0], (850, 300))
@@ -398,7 +343,7 @@ class UI:
                         self.show_trump_card()
                         self.screen.blit(game_points_text(self.points), (20, 15))
                         self.draw_opponents_attempts(opponents_attempts)
-                        self.draw_letter_buttons(LETTER_BUTTONS)
+                        self.draw_letter_buttons(BUTTONS)
                         self.screen.blit(self.players_hands[0][0], (450, 400))
                         self.screen.blit(self.players_hands[1][0], (400, 300))
                         self.screen.blit(self.players_hands[2][0], (500, 300))
@@ -409,7 +354,7 @@ class UI:
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
-                    for button, text in LETTER_BUTTONS:
+                    for button, text in BUTTONS:
                         if button.collidepoint(clicked_position):
                             print("collision with text:", text, button)
 
