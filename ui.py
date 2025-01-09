@@ -60,7 +60,7 @@ class UI:
         print("number of players:", self.players)
         self.game_loop()
 
-    def draw_letter_buttons(self, BUTTONS):
+    def draw_buttons(self, BUTTONS):
         """ Drawing text buttons """
         for button, text in BUTTONS:
             button_text = box_text(text)
@@ -87,7 +87,7 @@ class UI:
         self.screen.fill(GREEN)
         #self.screen.blit(game_top_text(), (420, 15))
         self.screen.blit(game_points_text(self.points), (20,15))
-        self.draw_letter_buttons(BUTTONS)
+        self.draw_buttons(BUTTONS)
         random.shuffle(CARD_INDECES)  # numbers 0-35 are shuffled
         print("CARD_INDECES shuffled:", CARD_INDECES)
         self.empty_hands()
@@ -263,7 +263,49 @@ class UI:
                 self.screen.blit(self.players_hands[3][4], (480, 50))
                 self.screen.blit(self.players_hands[3][4], (500, 50))
 
-    def draw_opponents_attempts(self, opponents_attempts):
+    def draw_player_attempt(self):
+        # player's attempt
+        base_font = pygame.font.Font(None, 32)
+        user_text = ''
+        input_rect = pygame.Rect(200, 500, 50, 32)
+        color_active = pygame.Color('lightskyblue3')
+        color_passive = pygame.Color('chartreuse4') 
+        color = color_passive
+        attempt_entered = False
+        read_input = True
+        active = False
+        while (read_input is True):
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN: 
+                    if input_rect.collidepoint(event.pos): 
+                        active = True
+                    else:
+                        active = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        print("RETURN")
+                        attempt_entered = True
+                        read_input = False
+                        break
+                    if event.key == pygame.K_BACKSPACE:
+                        user_text = user_text[:-1]
+                    else:
+                        user_text += event.unicode
+                        print("else")
+            if active:
+                color = color_active
+            else:
+                color = color_passive
+            if attempt_entered == True:
+                break
+            pygame.draw.rect(self.screen, color, input_rect)
+            text_surface = base_font.render(user_text, True, (255, 255, 255))
+            self.screen.blit(text_surface, (input_rect.x+5, input_rect.y+5))
+            input_rect.w = max(100, text_surface.get_width()+10)
+            pygame.display.flip()
+        print("exited while")
+
+    def draw_attempts(self, opponents_attempts):
         """ Drawing how many wins opponents try to get per round """
         text_font = pygame.font.Font(pygame.font.get_default_font(), 20)
         opp_1_text = f"Attempt: {opponents_attempts[0]}"
@@ -280,11 +322,56 @@ class UI:
         self.screen.fill(GREEN)
         self.show_trump_card()
         self.screen.blit(game_points_text(self.points), (20,15))
-        self.draw_letter_buttons(BUTTONS)
+        self.draw_buttons(BUTTONS)
         self.screen.blit(self.players_hands[1][0], (50, 300))
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
             self.screen.blit(self.players_hands[3][0], (450, 50))
+
+    def move_cards_to_center(self, opponents_attempts):
+        self.screen.blit(self.players_hands[0][0], (450, 400))
+        self.screen.blit(self.players_hands[1][0], (50, 300))
+        self.screen.blit(self.players_hands[2][0], (850, 300))
+        if self.players == 4:
+            self.screen.blit(self.players_hands[3][0], (450, 50))
+        pygame.display.update()
+        pygame.time.wait(1000)
+        self.screen.fill(GREEN)
+        self.show_trump_card()
+        self.screen.blit(game_points_text(self.points), (20, 15))
+        self.draw_attempts(opponents_attempts)
+        self.draw_buttons(BUTTONS)
+        self.screen.blit(self.players_hands[0][0], (450, 400))
+        self.screen.blit(self.players_hands[1][0], (400, 300))
+        self.screen.blit(self.players_hands[2][0], (850, 300))
+        if self.players == 4:
+            self.screen.blit(self.players_hands[3][0], (450, 50))
+        pygame.display.update()
+        pygame.time.wait(1000)
+        self.screen.fill(GREEN)
+        self.show_trump_card()
+        self.screen.blit(game_points_text(self.points), (20, 15))
+        self.draw_attempts(opponents_attempts)
+        self.draw_buttons(BUTTONS)
+        self.screen.blit(self.players_hands[0][0], (450, 400))
+        self.screen.blit(self.players_hands[1][0], (400, 300))
+        self.screen.blit(self.players_hands[2][0], (850, 300))
+        if self.players == 4:
+            self.screen.blit(self.players_hands[3][0], (450, 250))
+        pygame.display.update()
+        pygame.time.wait(1000)
+        self.screen.fill(GREEN)
+        self.show_trump_card()
+        self.screen.blit(game_points_text(self.points), (20, 15))
+        self.draw_attempts(opponents_attempts)
+        self.draw_buttons(BUTTONS)
+        self.screen.blit(self.players_hands[0][0], (450, 400))
+        self.screen.blit(self.players_hands[1][0], (400, 300))
+        self.screen.blit(self.players_hands[2][0], (500, 300))
+        if self.players == 4:
+            self.screen.blit(self.players_hands[3][0], (450, 250))
+        pygame.display.update()
+        print("mouse over card:", players_cards[0][1])
 
     def game_loop(self):
         """ Game loop """
@@ -306,51 +393,9 @@ class UI:
                         self.screen.fill(GREEN)
                         self.show_trump_card()
                         self.screen.blit(game_points_text(self.points), (20, 15))
-                        self.draw_opponents_attempts(opponents_attempts)
-                        self.draw_letter_buttons(BUTTONS)
-                        self.screen.blit(self.players_hands[0][0], (450, 400))
-                        self.screen.blit(self.players_hands[1][0], (50, 300))
-                        self.screen.blit(self.players_hands[2][0], (850, 300))
-                        if self.players == 4:
-                            self.screen.blit(self.players_hands[3][0], (450, 50))
-                        pygame.display.update()
-                        pygame.time.wait(1000)
-                        self.screen.fill(GREEN)
-                        self.show_trump_card()
-                        self.screen.blit(game_points_text(self.points), (20, 15))
-                        self.draw_opponents_attempts(opponents_attempts)
-                        self.draw_letter_buttons(BUTTONS)
-                        self.screen.blit(self.players_hands[0][0], (450, 400))
-                        self.screen.blit(self.players_hands[1][0], (400, 300))
-                        self.screen.blit(self.players_hands[2][0], (850, 300))
-                        if self.players == 4:
-                            self.screen.blit(self.players_hands[3][0], (450, 50))
-                        pygame.display.update()
-                        pygame.time.wait(1000)
-                        self.screen.fill(GREEN)
-                        self.show_trump_card()
-                        self.screen.blit(game_points_text(self.points), (20, 15))
-                        self.draw_opponents_attempts(opponents_attempts)
-                        self.draw_letter_buttons(BUTTONS)
-                        self.screen.blit(self.players_hands[0][0], (450, 400))
-                        self.screen.blit(self.players_hands[1][0], (400, 300))
-                        self.screen.blit(self.players_hands[2][0], (850, 300))
-                        if self.players == 4:
-                            self.screen.blit(self.players_hands[3][0], (450, 250))
-                        pygame.display.update()
-                        pygame.time.wait(1000)
-                        self.screen.fill(GREEN)
-                        self.show_trump_card()
-                        self.screen.blit(game_points_text(self.points), (20, 15))
-                        self.draw_opponents_attempts(opponents_attempts)
-                        self.draw_letter_buttons(BUTTONS)
-                        self.screen.blit(self.players_hands[0][0], (450, 400))
-                        self.screen.blit(self.players_hands[1][0], (400, 300))
-                        self.screen.blit(self.players_hands[2][0], (500, 300))
-                        if self.players == 4:
-                            self.screen.blit(self.players_hands[3][0], (450, 250))
-                        pygame.display.update()
-                        print("mouse over card:", players_cards[0][1])
+                        self.draw_attempts(opponents_attempts)
+                        self.draw_buttons(BUTTONS)
+                        self.move_cards_to_center(opponents_attempts)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
@@ -361,8 +406,9 @@ class UI:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_n:
                         opponents_attempts = self.deal_cards()
+                        self.draw_player_attempt()
                         print("opponents_attempts:", opponents_attempts)
-                        self.draw_opponents_attempts(opponents_attempts)
+                        self.draw_attempts(opponents_attempts)
             #pygame.draw.rect(self.screen, BLUE, (890,650,100,40))
             #pygame.draw.rect(self.screen, BLUE, (890,700,100,40))
             pygame.display.update()
