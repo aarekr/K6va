@@ -20,7 +20,9 @@ CARD_INDECES = list(range(36))
 CARD_IMAGE_SIZE = (100, 130)
 
 players_cards = []
-opponents_attempts = []
+opponents_attempts = []  # how many wins opponents plan to get during a round
+played_cards = []
+playing_order = []       # player, opp1, (opp3), opp2
 
 for i in range(len(CARD_LIST)):
     image = pygame.image.load((CARD_LIST[i][2]))
@@ -118,6 +120,7 @@ class UI:
         opponent_2_hand_value = round(self.opponent_hand_value(2))
         print("opponent_2_hand_value:", opponent_2_hand_value)
 
+        opponent_3_hand_value = 0
         if self.players == 4:
             print("OPPONENT 3")
             for i in range(self.round):
@@ -165,27 +168,35 @@ class UI:
     def show_cards_on_table(self):
         """ Drawing cards on the table """
         if self.round == 1:
-            self.screen.blit(self.players_hands[0][0], (450, 600))
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
             card = pygame.Rect(450, 600, 100, 130)
             players_cards.append(card)
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[2][0], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (450, 50))
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
         elif self.round == 2:
-            self.screen.blit(self.players_hands[0][0], (390, 600))
-            self.screen.blit(self.players_hands[0][1], (510, 600))
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
+            card = pygame.Rect(390, 600, 100, 130)
+            players_cards.append(card)
+            card = pygame.Rect(510, 600, 100, 130)
+            players_cards.append(card)
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[1][1], (70, 300))
             self.screen.blit(self.players_hands[2][0], (830, 300))
             self.screen.blit(self.players_hands[2][1], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (440, 50))
-                self.screen.blit(self.players_hands[3][1], (460, 50))
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
         elif self.round == 3:
-            self.screen.blit(self.players_hands[0][0], (330, 600))
-            self.screen.blit(self.players_hands[0][1], (450, 600))
-            self.screen.blit(self.players_hands[0][2], (570, 600))
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[1][1], (70, 300))
             self.screen.blit(self.players_hands[1][2], (90, 300))
@@ -193,14 +204,12 @@ class UI:
             self.screen.blit(self.players_hands[2][1], (830, 300))
             self.screen.blit(self.players_hands[2][2], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (430, 50))
-                self.screen.blit(self.players_hands[3][1], (450, 50))
-                self.screen.blit(self.players_hands[3][2], (470, 50))
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
         elif self.round == 4:
-            self.screen.blit(self.players_hands[0][0], (270, 600))
-            self.screen.blit(self.players_hands[0][1], (390, 600))
-            self.screen.blit(self.players_hands[0][2], (510, 600))
-            self.screen.blit(self.players_hands[0][3], (630, 600))
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[1][1], (70, 300))
             self.screen.blit(self.players_hands[1][2], (90, 300))
@@ -210,16 +219,12 @@ class UI:
             self.screen.blit(self.players_hands[2][2], (830, 300))
             self.screen.blit(self.players_hands[2][3], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (420, 50))
-                self.screen.blit(self.players_hands[3][1], (440, 50))
-                self.screen.blit(self.players_hands[3][2], (460, 50))
-                self.screen.blit(self.players_hands[3][3], (480, 50))
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
         elif self.round == 5:
-            self.screen.blit(self.players_hands[0][0], (210, 600))
-            self.screen.blit(self.players_hands[0][1], (330, 600))
-            self.screen.blit(self.players_hands[0][2], (450, 600))
-            self.screen.blit(self.players_hands[0][3], (570, 600))
-            self.screen.blit(self.players_hands[0][4], (690, 600))
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[1][1], (70, 300))
             self.screen.blit(self.players_hands[1][2], (90, 300))
@@ -231,18 +236,12 @@ class UI:
             self.screen.blit(self.players_hands[2][3], (830, 300))
             self.screen.blit(self.players_hands[2][4], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (410, 50))
-                self.screen.blit(self.players_hands[3][1], (430, 50))
-                self.screen.blit(self.players_hands[3][2], (450, 50))
-                self.screen.blit(self.players_hands[3][3], (470, 50))
-                self.screen.blit(self.players_hands[3][4], (490, 50))
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
         elif self.round == 6:
-            self.screen.blit(self.players_hands[0][0], (400, 600))
-            self.screen.blit(self.players_hands[0][1], (440, 600))
-            self.screen.blit(self.players_hands[0][2], (480, 600))
-            self.screen.blit(self.players_hands[0][3], (520, 600))
-            self.screen.blit(self.players_hands[0][4], (560, 600))
-            self.screen.blit(self.players_hands[0][5], (600, 600))
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
             self.screen.blit(self.players_hands[1][0], (50, 300))
             self.screen.blit(self.players_hands[1][1], (70, 300))
             self.screen.blit(self.players_hands[1][2], (90, 300))
@@ -256,18 +255,56 @@ class UI:
             self.screen.blit(self.players_hands[2][4], (830, 300))
             self.screen.blit(self.players_hands[2][5], (850, 300))
             if self.players == 4:
-                self.screen.blit(self.players_hands[3][0], (400, 50))
-                self.screen.blit(self.players_hands[3][1], (420, 50))
-                self.screen.blit(self.players_hands[3][2], (440, 50))
-                self.screen.blit(self.players_hands[3][3], (460, 50))
-                self.screen.blit(self.players_hands[3][4], (480, 50))
-                self.screen.blit(self.players_hands[3][4], (500, 50))
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
+        elif self.round == 7:
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
+            if self.players == 4:
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
+        elif self.round == 8:
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
+            if self.players == 4:
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
+        elif self.round == 9:
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
+            if self.players == 4:
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
+        elif self.round == 10:
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
+            if self.players == 4:
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
+        elif self.round == 11:
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
+            if self.players == 4:
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
+        elif self.round == 12:
+            x_coord = player_card_x_coordinates(self.round)
+            for i in range(self.round):
+                self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
+            if self.players == 4:
+                for i in range(self.round):
+                    self.screen.blit(self.players_hands[0][i], (x_coord[i], 50))
 
     def draw_player_attempt(self):
         # player's attempt
         base_font = pygame.font.Font(None, 32)
         user_text = ''
-        input_rect = pygame.Rect(200, 500, 50, 32)
+        input_rect = pygame.Rect(200, 700, 50, 32)
         color_active = pygame.Color('lightskyblue3')
         color_passive = pygame.Color('chartreuse4') 
         color = color_passive
@@ -329,6 +366,7 @@ class UI:
             self.screen.blit(self.players_hands[3][0], (450, 50))
 
     def move_cards_to_center(self, opponents_attempts):
+        """ Moving chosen cards to the table center """
         self.screen.blit(self.players_hands[0][0], (450, 400))
         self.screen.blit(self.players_hands[1][0], (50, 300))
         self.screen.blit(self.players_hands[2][0], (850, 300))
@@ -373,6 +411,9 @@ class UI:
         pygame.display.update()
         print("mouse over card:", players_cards[0][1])
 
+    def check_who_won(self):
+        print("checking who won:", self.players_hands)
+
     def game_loop(self):
         """ Game loop """
         opponents_attempts = []
@@ -386,16 +427,22 @@ class UI:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+                """if players_cards != []:
+                    mouse_position = pygame.mouse.get_pos()
+                    if players_cards[0].collidepoint(mouse_position):
+                        print("mouse position:", mouse_position)"""
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
                     print("clicked_position:", clicked_position)
                     if players_cards[0].collidepoint(clicked_position):
+                        print("mouse over card")
                         self.screen.fill(GREEN)
                         self.show_trump_card()
                         self.screen.blit(game_points_text(self.points), (20, 15))
                         self.draw_attempts(opponents_attempts)
                         self.draw_buttons(BUTTONS)
                         self.move_cards_to_center(opponents_attempts)
+                        self.check_who_won()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos

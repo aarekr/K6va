@@ -33,6 +33,32 @@ def box_text(letter):
     label = button_font.render(letter, True, BLACK)
     return label
 
+def player_card_x_coordinates(round):
+    if round == 1:
+        return [450]
+    elif round == 2:
+        return [440, 460]
+    elif round == 3:
+        return [430, 450, 470]
+    elif round == 4:
+        return [420, 440, 460, 480]
+    elif round == 5:
+        return [410, 430, 450, 470, 490]
+    elif round == 6:
+        return [400, 420, 440, 460, 480, 500]
+    elif round == 7:
+        return [390, 410, 430, 450, 470, 490, 510]
+    elif round == 8:
+        return [380, 400, 420, 440, 460, 480, 500, 520]
+    elif round == 9:
+        return [370, 390, 410, 430, 450, 470, 490, 510, 530]
+    elif round == 10:
+        return [360, 380, 400, 420, 440, 460, 480, 500, 520, 540]
+    elif round == 11:
+        return [350, 370, 390, 410, 430, 450, 470, 490, 510, 530, 550]
+    elif round == 12:
+        return [340, 360, 380, 400, 420, 440, 460, 480, 500, 520, 540, 560]
+
 TEXT_BOXES = []
 for row in range(2):
     for column in range(1):
