@@ -22,9 +22,16 @@ def how_many_players_text():
 
 def game_points_text(points):
     """ Displaying how many total points the player has """
-    text_font = pygame.font.Font(pygame.font.get_default_font(), 30)
+    text_font = pygame.font.Font(pygame.font.get_default_font(), 25)
     game_points = f"Points: {points}"
     label = text_font.render(game_points, 0, BLACK)
+    return label
+
+def game_round_text(round):
+    """ Displaying what round is played """
+    text_font = pygame.font.Font(pygame.font.get_default_font(), 30)
+    round = f"Round: {round}"
+    label = text_font.render(round, 0, BLACK)
     return label
 
 def box_text(letter):
@@ -58,6 +65,58 @@ def player_card_x_coordinates(round):
         return [350, 370, 390, 410, 430, 450, 470, 490, 510, 530, 550]
     elif round == 12:
         return [340, 360, 380, 400, 420, 440, 460, 480, 500, 520, 540, 560]
+
+def get_opp_1_x_coord(round):
+        if round == 1:
+            return [50]
+        elif round == 2:
+            return [50, 70]
+        elif round == 3:
+            return [50, 70, 90]
+        elif round == 4:
+            return [50, 70, 90, 110]
+        elif round == 5:
+            return [50, 70, 90, 110, 130]
+        elif round == 6:
+            return [50, 70, 90, 110, 130, 150]
+        elif round == 7:
+            return [50, 70, 90, 110, 130, 150, 170]
+        elif round == 8:
+            return [50, 70, 90, 110, 130, 150, 170, 190]
+        elif round == 9:
+            return [50, 70, 90, 110, 130, 150, 170, 190, 210]
+        elif round == 10:
+            return [50, 70, 90, 110, 130, 150, 170, 190, 210, 230]
+        elif round == 11:
+            return [50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250]
+        elif round == 12:
+            return [50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250, 270]
+
+def get_opp_2_x_coord(round):
+        if round == 1:
+            return [850]
+        elif round == 2:
+            return [830, 850]
+        elif round == 3:
+            return [810, 830, 850]
+        elif round == 4:
+            return [790, 810, 830, 850]
+        elif round == 5:
+            return [770, 790, 810, 830, 850]
+        elif round == 6:
+            return [750, 770, 790, 810, 830, 850]
+        elif round == 7:
+            return [730, 750, 770, 790, 810, 830, 850]
+        elif round == 8:
+            return [710, 730, 750, 770, 790, 810, 830, 850]
+        elif round == 9:
+            return [690, 710, 730, 750, 770, 790, 810, 830, 850]
+        elif round == 10:
+            return [670, 690, 710, 730, 750, 770, 790, 810, 830, 850]
+        elif round == 11:
+            return [650, 670, 690, 710, 730, 750, 770, 790, 810, 830, 850]
+        elif round == 12:
+            return [630, 650, 670, 690, 710, 730, 750, 770, 790, 810, 830, 850]
 
 TEXT_BOXES = []
 for row in range(2):
