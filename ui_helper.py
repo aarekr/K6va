@@ -73,13 +73,13 @@ def get_opp_2_x_coord(round):
 TEXT_BOXES = []
 for row in range(2):
     for column in range(1):
-        X = 850
+        X = 800
         y = 60 * row + 630
-        box = pygame.Rect(X, y, 120, 40)
+        box = pygame.Rect(X, y, 180, 40)
         TEXT_BOXES.append(box)
 
 BUTTONS = []
-BUTTON_TEXTS = ["FIRST", "SECOND"]
+BUTTON_TEXTS = ["DEAL NEW ROUND", "SECOND"]
 for index, box in enumerate(TEXT_BOXES):
     text = BUTTON_TEXTS[index]
     button = ([box, text])

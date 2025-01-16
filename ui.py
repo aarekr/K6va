@@ -314,12 +314,13 @@ class UI:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
                     print("clicked_position:", clicked_position)
+                    print("len players_cards:", len(players_cards))
                     if players_cards[0].collidepoint(clicked_position):
                         print("mouse over card 0")
                         self.show_basic_items(opponents_attempts)
                         self.move_cards_to_center(opponents_attempts)
                         self.check_who_won()
-                    elif players_cards[1].collidepoint(clicked_position):
+                    elif len(players_cards) > 1 and players_cards[1].collidepoint(clicked_position):
                         print("mouse over card 1")
                         self.show_basic_items(opponents_attempts)
                         self.move_cards_to_center(opponents_attempts)
@@ -328,6 +329,10 @@ class UI:
                         for button, text in BUTTONS:
                             if button.collidepoint(clicked_position):
                                 print("collision with text:", text, button)
+                                if text == "DEAL NEW ROUND":
+                                    opponents_attempts = self.deal_cards()
+                                    print("opponents_attempts:", opponents_attempts)
+                                    self.draw_attempts(opponents_attempts)
 
                 #if event.type == pygame.MOUSEBUTTONDOWN:
                 #    clicked_position = event.pos
