@@ -250,6 +250,7 @@ class UI:
             self.screen.blit(self.players_hands[3][0], (450, 50))
 
     def show_basic_items(self, opponents_attempts):
+        """ Drawing screen, texts and buttons """
         self.screen.fill(GREEN)
         self.screen.blit(game_round_text(self.round), (20, 15))
         self.screen.blit(game_points_text(self.points), (20, 50))
@@ -257,9 +258,23 @@ class UI:
         self.draw_attempts(opponents_attempts)
         self.draw_buttons(BUTTONS)
 
-    def move_cards_to_center(self, opponents_attempts):
+    def move_cards_to_center(self, opponents_attempts, clicked_position):
         """ Moving chosen cards to the table center """
-        self.screen.blit(self.players_hands[0][0], (450, 400))
+        print("move_cards_to_center clicked_position:", clicked_position)
+        index_player_chosen_card = 0
+        if self.round == 1:
+            print("round 1 moving card")
+        elif self.round > 1:
+            print("round > 1 moving card:", clicked_position[0])
+            print("round > 1 player_card_x_coordinates:", player_card_x_coordinates(self.round))
+            index_player_chosen_card = 0
+            for index, x in enumerate(player_card_x_coordinates(self.round)):
+                print("item:", index, x)
+                if x >= clicked_position[0]:
+                    break
+                index_player_chosen_card = index
+        print("index_player_chosen_card:", index_player_chosen_card)
+        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
         self.screen.blit(self.players_hands[1][0], (50, 300))
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
@@ -267,7 +282,7 @@ class UI:
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
-        self.screen.blit(self.players_hands[0][0], (450, 400))
+        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
         self.screen.blit(self.players_hands[1][0], (400, 300))
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
@@ -275,7 +290,7 @@ class UI:
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
-        self.screen.blit(self.players_hands[0][0], (450, 400))
+        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
         self.screen.blit(self.players_hands[1][0], (400, 300))
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
@@ -283,13 +298,13 @@ class UI:
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
-        self.screen.blit(self.players_hands[0][0], (450, 400))
+        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
         self.screen.blit(self.players_hands[1][0], (400, 300))
         self.screen.blit(self.players_hands[2][0], (500, 300))
         if self.players == 4:
             self.screen.blit(self.players_hands[3][0], (450, 250))
         pygame.display.update()
-        print("mouse over card:", players_cards[0][1])
+        #print("mouse over card:", players_cards[0][1])
 
     def check_who_won(self):
         print("checking who won:", self.players_hands)
@@ -318,12 +333,12 @@ class UI:
                     if players_cards[0].collidepoint(clicked_position):
                         print("mouse over card 0")
                         self.show_basic_items(opponents_attempts)
-                        self.move_cards_to_center(opponents_attempts)
+                        self.move_cards_to_center(opponents_attempts, clicked_position)
                         self.check_who_won()
                     elif len(players_cards) > 1 and players_cards[1].collidepoint(clicked_position):
                         print("mouse over card 1")
                         self.show_basic_items(opponents_attempts)
-                        self.move_cards_to_center(opponents_attempts)
+                        self.move_cards_to_center(opponents_attempts, clicked_position)
                         self.check_who_won()
                     else:
                         for button, text in BUTTONS:
