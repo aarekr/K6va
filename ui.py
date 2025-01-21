@@ -21,7 +21,6 @@ CARD_IMAGE_SIZE = (100, 130)
 
 players_cards = []
 opponents_attempts = []  # how many wins opponents plan to get during a round
-played_cards = []
 playing_order = []       # player, opp1, (opp3), opp2
 
 for i in range(len(CARD_LIST)):
@@ -279,6 +278,7 @@ class UI:
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
             self.screen.blit(self.players_hands[3][0], (450, 50))
+        self.show_cards_on_table()
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
@@ -287,6 +287,7 @@ class UI:
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
             self.screen.blit(self.players_hands[3][0], (450, 50))
+        self.show_cards_on_table()
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
@@ -295,6 +296,7 @@ class UI:
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
             self.screen.blit(self.players_hands[3][0], (450, 250))
+        self.show_cards_on_table()
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
@@ -303,6 +305,7 @@ class UI:
         self.screen.blit(self.players_hands[2][0], (500, 300))
         if self.players == 4:
             self.screen.blit(self.players_hands[3][0], (450, 250))
+        self.show_cards_on_table()
         pygame.display.update()
         #print("mouse over card:", players_cards[0][1])
 
