@@ -38,6 +38,10 @@ class UI:
         self.players_hands = [[],[],[],[]]  # holds cards dealt during each round
         self.card_indeces = [[],[],[],[]]   # card indeces in players' hands
         self.points = [[],[],[],[]]         # holds cumulative points per player during the game
+        self.values_of_cards_in_hands = {"0": {"c": [], "d": [], "h": [], "s": []},
+                                         "1": {"c": [], "d": [], "h": [], "s": []},
+                                         "2": {"c": [], "d": [], "h": [], "s": []},
+                                         "3": {"c": [], "d": [], "h": [], "s": []}}
 
     def start_game(self):
         """ Texts when game starts """
@@ -79,6 +83,16 @@ class UI:
         self.card_indeces[1] = []
         self.card_indeces[2] = []
         self.card_indeces[3] = []
+        self.values_of_cards_in_hands = {"0": {"c": [], "d": [], "h": [], "s": []},
+                                         "1": {"c": [], "d": [], "h": [], "s": []},
+                                         "2": {"c": [], "d": [], "h": [], "s": []},
+                                         "3": {"c": [], "d": [], "h": [], "s": []}}
+
+    def check_who_won(self):
+        print("checking who won hands:", self.players_hands[0])
+        print("checking who won index:", self.card_indeces[0])
+        #self.players_hands[0]
+        #self.card_indeces[0]
 
     def deal_cards(self):
         """ Shuffle and deal cards to players """
@@ -91,45 +105,52 @@ class UI:
         self.screen.blit(game_points_text(self.points), (20, 50))
         self.draw_buttons(BUTTONS)
         random.shuffle(CARD_INDECES)  # numbers 0-35 are shuffled
-        print("CARD_INDECES shuffled:", CARD_INDECES)
         self.empty_hands()
         index_pointer = 0  # index in CARD_INDECES which determines a card in CARDS
         # each player gets self.round number of cards
-        print("PLAYER")
+        print("*** PLAYER ***")
         for i in range(self.round):
-            print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
             self.players_hands[0].append(CARDS[CARD_INDECES[index_pointer]])
             self.card_indeces[0].append(CARD_INDECES[index_pointer])
             index_pointer += 1
+        for i in self.card_indeces[0][-(self.round+1):]:
+            self.values_of_cards_in_hands["0"][CARD_LIST[i][1]].append(CARD_LIST[i][0])
 
-        print("OPPONENT 1")
+        print("*** OPPONENT 1 ***")
         for i in range(self.round):
-            print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
             self.players_hands[1].append(CARDS[CARD_INDECES[index_pointer]])
             self.card_indeces[1].append(CARD_INDECES[index_pointer])
             index_pointer += 1
         opponent_1_hand_value = round(self.opponent_hand_value(1))
         print("opponent_1_hand_value:", opponent_1_hand_value)
+        for i in self.card_indeces[1][-(self.round+1):]:
+            self.values_of_cards_in_hands["1"][CARD_LIST[i][1]].append(CARD_LIST[i][0])
 
-        print("OPPONENT 2")
+        print("*** OPPONENT 2 ***")
         for i in range(self.round):
-            print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
             self.players_hands[2].append(CARDS[CARD_INDECES[index_pointer]])
             self.card_indeces[2].append(CARD_INDECES[index_pointer])
             index_pointer += 1
         opponent_2_hand_value = round(self.opponent_hand_value(2))
         print("opponent_2_hand_value:", opponent_2_hand_value)
+        for i in self.card_indeces[2][-(self.round+1):]:
+            self.values_of_cards_in_hands["2"][CARD_LIST[i][1]].append(CARD_LIST[i][0])
 
         opponent_3_hand_value = 0
         if self.players == 4:
-            print("OPPONENT 3")
+            print("*** OPPONENT 3 ***")
             for i in range(self.round):
-                print("i:", i, "- p:", index_pointer, " - INDECES:", CARD_INDECES[index_pointer])
                 self.players_hands[3].append(CARDS[CARD_INDECES[index_pointer]])
                 self.card_indeces[3].append(CARD_INDECES[index_pointer])
                 index_pointer += 1
             opponent_3_hand_value = round(self.opponent_hand_value(3))
             print("opponent_3_hand_value:", opponent_3_hand_value)
+            for i in self.card_indeces[3][-(self.round+1):]:
+                self.values_of_cards_in_hands["3"][CARD_LIST[i][1]].append(CARD_LIST[i][0])
+
+        print("SUMMARY:")
+        for key, value in self.values_of_cards_in_hands.items():
+            print(key, value)
 
         self.show_cards_on_table()
         self.show_trump_card()
@@ -146,7 +167,6 @@ class UI:
         for key, value in hand.items():
             if key == CARD_LIST[CARD_INDECES[-1]][1] and len(value) > 0:  # trump in hand
                 for card in value:  # point for every trump card
-                    print("card in value:", card)
                     if (key == "c" and value == 7) or (key == "s" and value == 7):  # c7,s7
                         continue
                     hand_value += 1
@@ -308,9 +328,6 @@ class UI:
         self.show_cards_on_table()
         pygame.display.update()
         #print("mouse over card:", players_cards[0][1])
-
-    def check_who_won(self):
-        print("checking who won:", self.players_hands)
 
     def game_loop(self):
         """ Game loop """
