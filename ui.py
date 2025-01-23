@@ -88,11 +88,27 @@ class UI:
                                          "2": {"c": [], "d": [], "h": [], "s": []},
                                          "3": {"c": [], "d": [], "h": [], "s": []}}
 
+    def get_first_card(self):
+        for key, value in self.values_of_cards_in_hands["0"].items():
+            if len(value) > 0:
+                first_card = value.pop()
+                return (key, first_card)
+        return 0
+
     def check_who_won(self):
-        print("checking who won hands:", self.players_hands[0])
-        print("checking who won index:", self.card_indeces[0])
-        #self.players_hands[0]
-        #self.card_indeces[0]
+        print("who won trump card:", CARDS[CARD_INDECES[-1]])
+        winner_index = 0
+        suit_and_number_asked_by_beginning_player = self.get_first_card()
+        print("check_who_won suit_asked_by_beginning_player:", suit_and_number_asked_by_beginning_player)
+        highest_card = [suit_and_number_asked_by_beginning_player[0], suit_and_number_asked_by_beginning_player[1]]
+        for key, value in self.values_of_cards_in_hands.items():
+            print("who won:", key, value)
+            for number in value[suit_and_number_asked_by_beginning_player[0]]:
+                if number > highest_card[1]:
+                    highest_card = [suit_and_number_asked_by_beginning_player[0], number]
+                    winner_index = key
+        print("round won by:", winner_index, highest_card)
+            
 
     def deal_cards(self):
         """ Shuffle and deal cards to players """
@@ -181,7 +197,7 @@ class UI:
         return hand_value
 
     def show_trump_card(self):
-        """ Showing trump card in the right upper corner """
+        """ Showing trump card in the right upper corner. Always the last card in CARDS[CARD_INDECES[-1]] """
         if (self.players == 3 and self.round < 12) or (self.players == 4 and self.round < 9):
             self.screen.blit(CARDS[CARD_INDECES[-1]], (870, 20))
 
