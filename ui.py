@@ -21,7 +21,6 @@ CARD_IMAGE_SIZE = (100, 130)
 
 players_cards = []
 opponents_attempts = []  # how many wins opponents plan to get during a round
-playing_order = []       # player, opp1, (opp3), opp2
 
 for i in range(len(CARD_LIST)):
     image = pygame.image.load((CARD_LIST[i][2]))
@@ -34,10 +33,13 @@ class UI:
         self.screen = pygame.display.set_mode(BOARD_SIZE)
         self.game_active = True
         self.players = 3                    # change to 4 if 4 players playing
+        self.playing_order = []             # player, opp1, (opp3), opp2
+        self.starting_player_index_in_table = 0  
         self.round = 0                      # rounds 1->12->1 if 3 players, 1->9->1 if 4 players
         self.players_hands = [[],[],[],[]]  # holds cards dealt during each round
         self.card_indeces = [[],[],[],[]]   # card indeces in players' hands
         self.points = [[],[],[],[]]         # holds cumulative points per player during the game
+        self.suit_and_number_asked_by_beginning_player = []
         self.values_of_cards_in_hands = {"0": {"c": [], "d": [], "h": [], "s": []},
                                          "1": {"c": [], "d": [], "h": [], "s": []},
                                          "2": {"c": [], "d": [], "h": [], "s": []},
@@ -55,14 +57,21 @@ class UI:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_3:
                         start_game = True
+                        self.playing_order = [0, 1, 2]
+                        self.starting_player_index_in_table = random.choice([0, 1, 2])
                         self.points = 0
                     elif event.key == pygame.K_4:
                         start_game = True
                         self.players = 4
+                        self.playing_order = [0, 1, 3, 2]
+                        self.starting_player_index_in_table = random.choice([0, 1, 2, 3])
                         self.points = 0
             if start_game is True:
                 break
         print("number of players:", self.players)
+        print("playing order    :", self.playing_order)
+        print("starting pl index:", self.starting_player_index_in_table)
+        print("starting player  :", self.playing_order[self.starting_player_index_in_table])
         self.game_loop()
 
     def draw_buttons(self, BUTTONS):
@@ -98,14 +107,14 @@ class UI:
     def check_who_won(self):
         print("who won trump card:", CARDS[CARD_INDECES[-1]])
         winner_index = 0
-        suit_and_number_asked_by_beginning_player = self.get_first_card()
-        print("check_who_won suit_asked_by_beginning_player:", suit_and_number_asked_by_beginning_player)
-        highest_card = [suit_and_number_asked_by_beginning_player[0], suit_and_number_asked_by_beginning_player[1]]
+        self.suit_and_number_asked_by_beginning_player = self.get_first_card()
+        print("check_who_won suit_asked_by_beginning_player:", self.suit_and_number_asked_by_beginning_player)
+        highest_card = [self.suit_and_number_asked_by_beginning_player[0], self.suit_and_number_asked_by_beginning_player[1]]
         for key, value in self.values_of_cards_in_hands.items():
             print("who won:", key, value)
-            for number in value[suit_and_number_asked_by_beginning_player[0]]:
+            for number in value[self.suit_and_number_asked_by_beginning_player[0]]:
                 if number > highest_card[1]:
-                    highest_card = [suit_and_number_asked_by_beginning_player[0], number]
+                    highest_card = [self.suit_and_number_asked_by_beginning_player[0], number]
                     winner_index = key
         print("round won by:", winner_index, highest_card)
             
@@ -297,6 +306,9 @@ class UI:
         """ Moving chosen cards to the table center """
         print("move_cards_to_center clicked_position:", clicked_position)
         index_player_chosen_card = 0
+        index_opp_1_chosen_card = 0
+        index_opp_2_chosen_card = 0
+        index_opp_3_chosen_card = 0
         if self.round == 1:
             print("round 1 moving card")
         elif self.round > 1:
@@ -381,9 +393,14 @@ class UI:
                             if button.collidepoint(clicked_position):
                                 print("collision with text:", text, button)
                                 if text == "DEAL NEW ROUND":
+                                    #self.playing_order[self.starting_player_index_in_table]
+                                    self.starting_player_index_in_table += 1
+                                    if self.starting_player_index_in_table >= self.players:
+                                        self.starting_player_index_in_table = 0
                                     opponents_attempts = self.deal_cards()
                                     print("opponents_attempts:", opponents_attempts)
                                     self.draw_attempts(opponents_attempts)
+                                    print("player:", self.playing_order[self.starting_player_index_in_table], "has turn")
 
                 #if event.type == pygame.MOUSEBUTTONDOWN:
                 #    clicked_position = event.pos
