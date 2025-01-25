@@ -117,7 +117,6 @@ class UI:
                     highest_card = [self.suit_and_number_asked_by_beginning_player[0], number]
                     winner_index = key
         print("round won by:", winner_index, highest_card)
-            
 
     def deal_cards(self):
         """ Shuffle and deal cards to players """
@@ -321,7 +320,7 @@ class UI:
                     break
                 index_player_chosen_card = index
         print("index_player_chosen_card:", index_player_chosen_card)
-        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
+        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))  # player card moves
         self.screen.blit(self.players_hands[1][0], (50, 300))
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
@@ -331,7 +330,7 @@ class UI:
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
         self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
-        self.screen.blit(self.players_hands[1][0], (400, 300))
+        self.screen.blit(self.players_hands[1][0], (400, 300))                         # opponent 1 card moves
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
             self.screen.blit(self.players_hands[3][0], (450, 50))
@@ -343,19 +342,30 @@ class UI:
         self.screen.blit(self.players_hands[1][0], (400, 300))
         self.screen.blit(self.players_hands[2][0], (850, 300))
         if self.players == 4:
-            self.screen.blit(self.players_hands[3][0], (450, 250))
+            self.screen.blit(self.players_hands[3][0], (450, 250))                     # opponent 4 card moves
         self.show_cards_on_table()
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
         self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
         self.screen.blit(self.players_hands[1][0], (400, 300))
-        self.screen.blit(self.players_hands[2][0], (500, 300))
+        self.screen.blit(self.players_hands[2][0], (500, 300))                         # opponent 3 card moves
         if self.players == 4:
             self.screen.blit(self.players_hands[3][0], (450, 250))
         self.show_cards_on_table()
         pygame.display.update()
         #print("mouse over card:", players_cards[0][1])
+
+    def draw_cards_in_hands(self):
+        x = 400
+        for key, value in self.values_of_cards_in_hands["0"].items():
+            for number in sorted(value):
+                card_list_index = value_to_card_image((number, key))
+                image = pygame.image.load((CARD_LIST[card_list_index][2]))
+                image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
+                self.screen.blit(image, (x, 400))
+                x += 20
+        pygame.display.update()
 
     def game_loop(self):
         """ Game loop """
@@ -370,10 +380,9 @@ class UI:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-                """if players_cards != []:
-                    mouse_position = pygame.mouse.get_pos()
-                    if players_cards[0].collidepoint(mouse_position):
-                        print("mouse position:", mouse_position)"""
+                # testing self.values_of_cards_in_hands
+                self.draw_cards_in_hands()
+                # testing ends
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
                     print("clicked_position:", clicked_position)
