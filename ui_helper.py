@@ -107,7 +107,7 @@ CARD_LIST = [(6, "c", "cards/6_of_clubs.png"), (6, "d", "cards/6_of_diamonds.png
 print("CARD_LIST length: ", len(CARD_LIST))
 
 def value_to_card_image(value):
-    print("asking for value:", value)
+    #print("asking for value:", value)
     for index, item in enumerate(CARD_LIST):
         if item[0] == value[0] and item[1] == value[1]:
             return index
