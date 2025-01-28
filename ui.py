@@ -214,17 +214,17 @@ class UI:
         x_coord = player_card_x_coordinates(self.round)
         x_coord_opp_1 = get_opp_1_x_coord(self.round)
         x_coord_opp_2 = get_opp_2_x_coord(self.round)
-        for i in range(self.round):
-            self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
-            card = pygame.Rect(x_coord[i], 600, 100, 130)
-            players_cards.append(card)
+        #for i in range(self.round):
+        #    self.screen.blit(self.players_hands[0][i], (x_coord[i], 600))
+        #    card = pygame.Rect(x_coord[i], 600, 100, 130)
+        #    players_cards.append(card)
         #for i in range(self.round):
         #    self.screen.blit(self.players_hands[1][i], (x_coord_opp_1[i], 300))
         #for i in range(self.round):
         #    self.screen.blit(self.players_hands[2][i], (x_coord_opp_2[i], 300))
-        if self.players == 4:
-            for i in range(self.round):
-                self.screen.blit(self.players_hands[3][i], (x_coord[i], 50))
+        #if self.players == 4:
+        #    for i in range(self.round):
+        #        self.screen.blit(self.players_hands[3][i], (x_coord[i], 50))
 
     def draw_player_attempt(self):
         # player's attempt
@@ -289,8 +289,8 @@ class UI:
         self.draw_buttons(BUTTONS)
         #self.screen.blit(self.players_hands[1][0], (50, 300))
         #self.screen.blit(self.players_hands[2][0], (850, 300))
-        if self.players == 4:
-            self.screen.blit(self.players_hands[3][0], (450, 50))
+        #if self.players == 4:
+        #    self.screen.blit(self.players_hands[3][0], (450, 50))
 
     def show_basic_items(self, opponents_attempts):
         """ Drawing screen, texts and buttons """
@@ -320,41 +320,40 @@ class UI:
                     break
                 index_player_chosen_card = index
         print("index_player_chosen_card:", index_player_chosen_card)
-        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))  # player card moves
+        #self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))  # player card moves
         #self.screen.blit(self.players_hands[1][0], (50, 300))
         #self.screen.blit(self.players_hands[2][0], (850, 300))
-        if self.players == 4:
-            self.screen.blit(self.players_hands[3][0], (450, 50))
+        #if self.players == 4:
+        #    self.screen.blit(self.players_hands[3][0], (450, 50))
         self.show_cards_on_table()
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
-        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
+        #self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
         #self.screen.blit(self.players_hands[1][0], (400, 300))                         # opponent 1 card moves
         #self.screen.blit(self.players_hands[2][0], (850, 300))
-        if self.players == 4:
-            self.screen.blit(self.players_hands[3][0], (450, 50))
+        #if self.players == 4:
+        #    self.screen.blit(self.players_hands[3][0], (450, 50))
         self.show_cards_on_table()
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
-        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
+        #self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
         #self.screen.blit(self.players_hands[1][0], (400, 300))
         #self.screen.blit(self.players_hands[2][0], (850, 300))
-        if self.players == 4:
-            self.screen.blit(self.players_hands[3][0], (450, 250))                     # opponent 4 card moves
+        #if self.players == 4:
+        #    self.screen.blit(self.players_hands[3][0], (450, 250))                     # opponent 4 card moves
         self.show_cards_on_table()
         pygame.display.update()
         pygame.time.wait(1000)
         self.show_basic_items(opponents_attempts)
-        self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
+        #self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
         #self.screen.blit(self.players_hands[1][0], (400, 300))
         #self.screen.blit(self.players_hands[2][0], (500, 300))                         # opponent 3 card moves
-        if self.players == 4:
-            self.screen.blit(self.players_hands[3][0], (450, 250))
+        #if self.players == 4:
+        #    self.screen.blit(self.players_hands[3][0], (450, 250))
         self.show_cards_on_table()
         pygame.display.update()
-        #print("mouse over card:", players_cards[0][1])
 
     def draw_cards_in_hands(self):
         card_count = 0
@@ -362,13 +361,13 @@ class UI:
             card_count += len(value)
         print("card_count:", card_count)
         # player's cards
-        x = BOARD_SIZE[0]/2 - card_count * 10
+        x = BOARD_SIZE[0]/2 - card_count * 10 - 40
         for key, value in self.values_of_cards_in_hands["0"].items():
             for number in sorted(value):
                 card_list_index = value_to_card_image((number, key))
                 image = pygame.image.load((CARD_LIST[card_list_index][2]))
                 image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
-                self.screen.blit(image, (x, 400))
+                self.screen.blit(image, (x, 600))
                 x += 20
         # opponent 1 cards
         x = 50
@@ -388,6 +387,16 @@ class UI:
                 image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
                 self.screen.blit(image, (x, 300))
                 x += 20
+        # opponent 3 cards
+        if self.players == 4:
+            x = BOARD_SIZE[0]/2 - card_count * 10 - 40
+            for key, value in self.values_of_cards_in_hands["3"].items():
+                for number in sorted(value):
+                    card_list_index = value_to_card_image((number, key))
+                    image = pygame.image.load((CARD_LIST[card_list_index][2]))
+                    image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
+                    self.screen.blit(image, (x, 50))
+                    x += 20
         pygame.display.update()
 
     def game_loop(self):
