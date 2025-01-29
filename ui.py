@@ -40,6 +40,7 @@ class UI:
         self.card_indeces = [[],[],[],[]]   # card indeces in players' hands
         self.points = [[],[],[],[]]         # holds cumulative points per player during the game
         self.suit_and_number_asked_by_beginning_player = []
+        self.player_cards_coordinates = []
         self.values_of_cards_in_hands = {"0": {"c": [], "d": [], "h": [], "s": []},
                                          "1": {"c": [], "d": [], "h": [], "s": []},
                                          "2": {"c": [], "d": [], "h": [], "s": []},
@@ -139,6 +140,11 @@ class UI:
             index_pointer += 1
         for i in self.card_indeces[0][-(self.round+1):]:
             self.values_of_cards_in_hands["0"][CARD_LIST[i][1]].append(CARD_LIST[i][0])
+        player_cards_starting_x_coordinate = int(BOARD_SIZE[0]/2 - self.round * 10 - 40)
+        for _ in range(self.round):
+            self.player_cards_coordinates.append((player_cards_starting_x_coordinate, 600))
+            player_cards_starting_x_coordinate += 20
+        print("player_cards_coordinates:", self.player_cards_coordinates)
 
         print("*** OPPONENT 1 ***")
         for i in range(self.round):
@@ -320,46 +326,16 @@ class UI:
                     break
                 index_player_chosen_card = index
         print("index_player_chosen_card:", index_player_chosen_card)
-        #self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))  # player card moves
-        #self.screen.blit(self.players_hands[1][0], (50, 300))
-        #self.screen.blit(self.players_hands[2][0], (850, 300))
-        #if self.players == 4:
-        #    self.screen.blit(self.players_hands[3][0], (450, 50))
-        self.show_cards_on_table()
-        pygame.display.update()
-        pygame.time.wait(1000)
-        self.show_basic_items(opponents_attempts)
-        #self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
-        #self.screen.blit(self.players_hands[1][0], (400, 300))                         # opponent 1 card moves
-        #self.screen.blit(self.players_hands[2][0], (850, 300))
-        #if self.players == 4:
-        #    self.screen.blit(self.players_hands[3][0], (450, 50))
-        self.show_cards_on_table()
-        pygame.display.update()
-        pygame.time.wait(1000)
-        self.show_basic_items(opponents_attempts)
-        #self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
-        #self.screen.blit(self.players_hands[1][0], (400, 300))
-        #self.screen.blit(self.players_hands[2][0], (850, 300))
-        #if self.players == 4:
-        #    self.screen.blit(self.players_hands[3][0], (450, 250))                     # opponent 4 card moves
-        self.show_cards_on_table()
-        pygame.display.update()
-        pygame.time.wait(1000)
-        self.show_basic_items(opponents_attempts)
-        #self.screen.blit(self.players_hands[0][index_player_chosen_card], (450, 400))
-        #self.screen.blit(self.players_hands[1][0], (400, 300))
-        #self.screen.blit(self.players_hands[2][0], (500, 300))                         # opponent 3 card moves
-        #if self.players == 4:
-        #    self.screen.blit(self.players_hands[3][0], (450, 250))
-        self.show_cards_on_table()
-        pygame.display.update()
+
+        #pygame.time.wait(1000)
+        #self.show_basic_items(opponents_attempts)
+        #self.show_cards_on_table()
+        #pygame.display.update()
 
     def draw_cards_in_hands(self):
         card_count = 0
         for value in self.values_of_cards_in_hands["0"].values():
             card_count += len(value)
-        print("card_count:", card_count)
         # player's cards
         x = BOARD_SIZE[0]/2 - card_count * 10 - 40
         for key, value in self.values_of_cards_in_hands["0"].items():
@@ -399,6 +375,41 @@ class UI:
                     x += 20
         pygame.display.update()
 
+    def move_player_chosen_card_to_center(self, card_index):
+        x = 450
+        index = 0
+        chosen_card = None
+        for key, value in self.values_of_cards_in_hands["0"].items():
+            print("key-value:", key, value)
+            if len(value) > 0:
+                for _ in range(len(value)):
+                    if index == card_index:
+                        chosen_card = (key, self.values_of_cards_in_hands["0"][key].pop())
+                        card_count = 0
+                        for value in self.values_of_cards_in_hands["0"].values():
+                            card_count += len(value)
+                        x = BOARD_SIZE[0]/2 - card_count * 10 - 40
+                        for key, value in self.values_of_cards_in_hands["0"].items():
+                            for number in sorted(value):
+                                card_list_index = value_to_card_image((number, key))
+                                image = pygame.image.load((CARD_LIST[card_list_index][2]))
+                                image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
+                                self.screen.blit(image, (x, 600))
+                                x += 20
+                        break
+                    else:
+                        index += 1
+        #chosen_card = self.values_of_cards_in_hands["0"][card_index]
+        print("chosen_card:", chosen_card)
+        print("self.values_of_cards_in_hands after pop:", self.values_of_cards_in_hands["0"])
+        for key, value in self.values_of_cards_in_hands["0"].items():
+            for number in sorted(value):
+                card_list_index = value_to_card_image((number, key))
+                image = pygame.image.load((CARD_LIST[card_list_index][2]))
+                image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
+                self.screen.blit(image, (x, 600))
+                x += 20
+
     def game_loop(self):
         """ Game loop """
         opponents_attempts = []
@@ -418,8 +429,8 @@ class UI:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     clicked_position = event.pos
                     print("clicked_position:", clicked_position)
-                    print("len players_cards:", len(players_cards))
-                    if players_cards[0].collidepoint(clicked_position):
+                    #print("len players_cards:", len(players_cards))
+                    """if players_cards[0].collidepoint(clicked_position):
                         print("mouse over card 0")
                         self.show_basic_items(opponents_attempts)
                         self.move_cards_to_center(opponents_attempts, clicked_position)
@@ -428,26 +439,31 @@ class UI:
                         print("mouse over card 1")
                         self.show_basic_items(opponents_attempts)
                         self.move_cards_to_center(opponents_attempts, clicked_position)
-                        self.check_who_won()
-                    else:
-                        for button, text in BUTTONS:
-                            if button.collidepoint(clicked_position):
-                                print("collision with text:", text, button)
-                                if text == "DEAL NEW ROUND":
-                                    #self.playing_order[self.starting_player_index_in_table]
-                                    self.starting_player_index_in_table += 1
-                                    if self.starting_player_index_in_table >= self.players:
-                                        self.starting_player_index_in_table = 0
-                                    opponents_attempts = self.deal_cards()
-                                    print("opponents_attempts:", opponents_attempts)
-                                    self.draw_attempts(opponents_attempts)
-                                    print("player:", self.playing_order[self.starting_player_index_in_table], "has turn")
+                        self.check_who_won()"""
 
-                #if event.type == pygame.MOUSEBUTTONDOWN:
-                #    clicked_position = event.pos
-                #    for button, text in BUTTONS:
-                #        if button.collidepoint(clicked_position):
-                #            print("collision with text:", text, button)
+                    # checking if player pressed one of the buttons
+                    for button, text in BUTTONS:
+                        if button.collidepoint(clicked_position):
+                            print("collision with text:", text, button)
+                            if text == "DEAL NEW ROUND":
+                                #self.playing_order[self.starting_player_index_in_table]
+                                self.player_cards_coordinates = []
+                                self.starting_player_index_in_table += 1
+                                if self.starting_player_index_in_table >= self.players:
+                                    self.starting_player_index_in_table = 0
+                                opponents_attempts = self.deal_cards()
+                                print("opponents_attempts:", opponents_attempts)
+                                self.draw_attempts(opponents_attempts)
+                                print("player:", self.playing_order[self.starting_player_index_in_table], "has turn")
+                    # checking if player pressed on a card
+                    for coordinates in self.player_cards_coordinates:
+                        print("---> coordinates:", coordinates)
+                        if self.round == 1:
+                            if clicked_position[0] >= coordinates[0] and clicked_position[0] <= coordinates[0] + 100:
+                                if clicked_position[1] >= coordinates[1] and clicked_position[1] <= coordinates[1] + 100:
+                                    print("x ja y osui")
+                                    card_index = 0
+                                    self.move_player_chosen_card_to_center(card_index)
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_n:
