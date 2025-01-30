@@ -79,7 +79,7 @@ for row in range(2):
         TEXT_BOXES.append(box)
 
 BUTTONS = []
-BUTTON_TEXTS = ["DEAL NEW ROUND", "SECOND"]
+BUTTON_TEXTS = ["NEXT CARD", "DEAL NEW ROUND"]
 for index, box in enumerate(TEXT_BOXES):
     text = BUTTON_TEXTS[index]
     button = ([box, text])

@@ -20,7 +20,7 @@ CARD_INDECES = list(range(36))
 CARD_IMAGE_SIZE = (100, 130)
 
 players_cards = []
-opponents_attempts = []  # how many wins opponents plan to get during a round
+opponents_attempts = [0,0,0,0]  # how many wins opponents plan to get during a round
 
 for i in range(len(CARD_LIST)):
     image = pygame.image.load((CARD_LIST[i][2]))
@@ -41,6 +41,7 @@ class UI:
         self.points = [[],[],[],[]]         # holds cumulative points per player during the game
         self.suit_and_number_asked_by_beginning_player = []
         self.player_cards_coordinates = []
+        self.player_chosen_card = None
         self.values_of_cards_in_hands = {"0": {"c": [], "d": [], "h": [], "s": []},
                                          "1": {"c": [], "d": [], "h": [], "s": []},
                                          "2": {"c": [], "d": [], "h": [], "s": []},
@@ -337,6 +338,12 @@ class UI:
         for value in self.values_of_cards_in_hands["0"].values():
             card_count += len(value)
         # player's cards
+        #print("draw_cards_in_hands self.player_chosen_card", self.player_chosen_card)
+        if self.player_chosen_card is not None:
+            card_list_index = value_to_card_image((self.player_chosen_card[1], self.player_chosen_card[0]))
+            image = pygame.image.load((CARD_LIST[card_list_index][2]))
+            image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
+            self.screen.blit(image, (450, 400))
         x = BOARD_SIZE[0]/2 - card_count * 10 - 40
         for key, value in self.values_of_cards_in_hands["0"].items():
             for number in sorted(value):
@@ -376,32 +383,27 @@ class UI:
         pygame.display.update()
 
     def move_player_chosen_card_to_center(self, card_index):
+        self.screen.fill(GREEN)
+        self.show_basic_items(opponents_attempts)
         x = 450
         index = 0
-        chosen_card = None
+        self.player_chosen_card = None
         for key, value in self.values_of_cards_in_hands["0"].items():
             print("key-value:", key, value)
             if len(value) > 0:
                 for _ in range(len(value)):
                     if index == card_index:
-                        chosen_card = (key, self.values_of_cards_in_hands["0"][key].pop())
+                        self.player_chosen_card = (key, self.values_of_cards_in_hands["0"][key].pop())
                         card_count = 0
                         for value in self.values_of_cards_in_hands["0"].values():
                             card_count += len(value)
-                        x = BOARD_SIZE[0]/2 - card_count * 10 - 40
-                        for key, value in self.values_of_cards_in_hands["0"].items():
-                            for number in sorted(value):
-                                card_list_index = value_to_card_image((number, key))
-                                image = pygame.image.load((CARD_LIST[card_list_index][2]))
-                                image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
-                                self.screen.blit(image, (x, 600))
-                                x += 20
                         break
                     else:
                         index += 1
         #chosen_card = self.values_of_cards_in_hands["0"][card_index]
-        print("chosen_card:", chosen_card)
+        print("chosen_card:", self.player_chosen_card)
         print("self.values_of_cards_in_hands after pop:", self.values_of_cards_in_hands["0"])
+        x = BOARD_SIZE[0]/2 - card_count * 10 - 40
         for key, value in self.values_of_cards_in_hands["0"].items():
             for number in sorted(value):
                 card_list_index = value_to_card_image((number, key))
@@ -409,6 +411,7 @@ class UI:
                 image = pygame.transform.scale(image, CARD_IMAGE_SIZE)
                 self.screen.blit(image, (x, 600))
                 x += 20
+        pygame.display.update()
 
     def game_loop(self):
         """ Game loop """
@@ -416,6 +419,7 @@ class UI:
         pygame.init()
         self.screen.fill(GREEN)
         self.screen.blit(game_top_text(), (420, 315))
+        self.draw_cards_in_hands()
         pygame.display.update()
 
         print("\nGame started")
@@ -445,9 +449,13 @@ class UI:
                     for button, text in BUTTONS:
                         if button.collidepoint(clicked_position):
                             print("collision with text:", text, button)
-                            if text == "DEAL NEW ROUND":
+                            if text == "NEXT CARD":
+                                print("next card")
+                                self.player_chosen_card = None
+                            elif text == "DEAL NEW ROUND":
                                 #self.playing_order[self.starting_player_index_in_table]
                                 self.player_cards_coordinates = []
+                                self.player_chosen_card = None
                                 self.starting_player_index_in_table += 1
                                 if self.starting_player_index_in_table >= self.players:
                                     self.starting_player_index_in_table = 0
@@ -455,6 +463,7 @@ class UI:
                                 print("opponents_attempts:", opponents_attempts)
                                 self.draw_attempts(opponents_attempts)
                                 print("player:", self.playing_order[self.starting_player_index_in_table], "has turn")
+
                     # checking if player pressed on a card
                     for coordinates in self.player_cards_coordinates:
                         print("---> coordinates:", coordinates)
